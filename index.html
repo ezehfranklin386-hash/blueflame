@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blue Flame Gas Supply Limited - Reliable LPG gas supply and delivery in Lagos. Order cylinders, accessories & get same-day delivery!">
     <link rel="icon" href="logo.png" type="image/png">
+    <meta name="theme-color" content="#0066CC">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Blue Flame Gas Supply LTD | Gas Delivery Lagos</title>
     <style>
         /* === BRAND COLORS - BLUE & WHITE ONLY === */
@@ -132,8 +134,8 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 180px 5% 120px;
-    min-height: calc(100vh - 110px);
+    padding: clamp(120px, 15vw, 180px) 5% clamp(80px, 10vw, 120px);
+    min-height: clamp(70vh, 100vh - 110px, 100vh);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -161,16 +163,16 @@
 }
 
 .hero h1 {
-    font-size: 4rem;
-    margin-bottom: 22px;
-    line-height: 1.1;
-    font-weight: 800;
-    position: relative;
-    z-index: 3;
-    color: #FFFFFF;
-    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-    animation: fadeInUp 1s ease;
-}
+            font-size: clamp(1.8rem, 5vw, 4rem);
+            margin-bottom: 22px;
+            line-height: 1.1;
+            font-weight: 800;
+            position: relative;
+            z-index: 3;
+            color: #FFFFFF;
+            text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            animation: fadeInUp 1s ease;
+        }
 
 .hero h1 span {
     color: #84c1ff;
@@ -178,16 +180,16 @@
 }
 
 .hero p {
-    font-size: 1.28rem;
-    margin-bottom: 42px;
-    color: rgba(230, 242, 255, 0.95);
-    max-width: 720px;
-    margin: 0 auto 40px;
-    position: relative;
-    z-index: 3;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeInUp 1s ease 0.2s both;
-}
+            font-size: clamp(1rem, 2.5vw, 1.28rem);
+            margin-bottom: 42px;
+            color: rgba(230, 242, 255, 0.95);
+            max-width: 720px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 3;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease 0.2s both;
+        }
 
 .hero-btns {
     display: flex;
@@ -236,17 +238,19 @@
 
 .section-title {
     letter-spacing: 0.05em;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
 
 .section-subtitle {
     letter-spacing: 0.01em;
     max-width: 720px;
     margin: 0 auto 35px;
+    font-size: clamp(1rem, 2vw, 1.1rem);
 }
 
         /* === FEATURES === */
-        .features { padding: 80px 5%; background: var(--lighter-blue); }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .features { padding: clamp(60px, 10vw, 80px) 5%; background: var(--lighter-blue); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: clamp(20px, 4vw, 30px); max-width: 1200px; margin: 0 auto; }
         .feature-card { background: var(--white); padding: 35px 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,102,204,0.1); transition: all 0.4s ease; border: 2px solid transparent; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,102,204,0.2); border-color: var(--primary); }
         .feature-icon { font-size: 3rem; margin-bottom: 20px; display: inline-block; animation: float 3s ease-in-out infinite; }
@@ -255,8 +259,8 @@
         .feature-card p { color: var(--gray); font-size: 0.95rem; }
 
         /* === ABOUT === */
-        .about { padding: 100px 5%; max-width: 1200px; margin: 0 auto; }
-        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .about { padding: clamp(60px, 10vw, 100px) 5%; max-width: 1200px; margin: 0 auto; }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 5vw, 60px); align-items: center; }
         .about-text { animation: slideInLeft 1s ease; }
         .about-text h2 { font-size: 2.5rem; color: var(--secondary); margin-bottom: 20px; position: relative; }
         .about-text h2::after { content:''; position:absolute; bottom:-10px; left:0; width:80px; height:4px; background:var(--primary-gradient); border-radius:2px; }
@@ -266,7 +270,8 @@
             background-size: cover;
             background-position: center;
             border-radius: 20px;
-            height: 400px;
+            height: 300px;
+            min-height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -281,8 +286,8 @@
         .image-content p { font-size: 1.2rem; margin: 0; opacity: 0.9; }
 
         /* === PRODUCTS === */
-        .products { padding: 100px 5%; background: var(--white); }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .products { padding: clamp(60px, 10vw, 100px) 5%; background: var(--white); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: clamp(20px, 4vw, 30px); max-width: 1200px; margin: 0 auto; }
         .product-card { background: var(--white); border-radius: 16px; border: 1px solid rgba(0,102,204,0.15); overflow: hidden; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,102,204,0.1); }
         .product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,102,204,0.2); border-color: var(--primary); }
         .product-image { position: relative; height: 250px; background: var(--lighter-blue); display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -302,7 +307,7 @@
         .qty-input { width: 60px; height: 40px; text-align: center; font-size: 1.125rem; font-weight: 700; border: 2px solid #E2E8F0; border-radius: 10px; }
 
         /* === SERVICES === */
-        .services { padding: 100px 5%; background: var(--secondary); color: var(--white); }
+        .services { padding: clamp(60px, 10vw, 100px) 5%; background: var(--secondary); color: var(--white); }
         .section-title { text-align: center; font-size: 2.8rem; margin-bottom: 15px; animation: fadeIn 1s ease; }
         .section-subtitle { text-align: center; color: #B0C4DE; margin-bottom: 60px; font-size: 1.1rem; animation: fadeIn 1s ease 0.3s both; }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; max-width: 1200px; margin: 0 auto; }
@@ -322,7 +327,7 @@
         .why-card p { color: var(--gray); }
 
         /* === CONTACT === */
-        .contact { padding: 100px 5%; background: linear-gradient(135deg, var(--lighter-blue) 0%, var(--light-blue) 100%); }
+        .contact { padding: clamp(60px, 10vw, 100px) 5%; background: linear-gradient(135deg, var(--lighter-blue) 0%, var(--light-blue) 100%); }
         .contact-container { max-width: 1000px; margin: 0 auto; background: var(--white); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,102,204,0.15); overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; animation: fadeInUp 1s ease; }
         .contact-info { background: var(--primary-gradient); color: var(--white); padding: 60px 40px; }
         .contact-info h3 { font-size: 1.8rem; margin-bottom: 30px; }
@@ -338,7 +343,7 @@
         .form-group textarea { height: 120px; resize: vertical; }
 
         /* === FOOTER === */
-        footer { background: var(--secondary); color: #B0C4DE; padding: 60px 5% 30px; }
+        footer { background: var(--secondary); color: #B0C4DE; padding: clamp(40px, 8vw, 60px) 5% clamp(20px, 4vw, 30px); }
         .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
         .footer-section h4 { color: var(--white); margin-bottom: 20px; font-size: 1.2rem; }
         .footer-section p, .footer-section a { color: #B0C4DE; margin-bottom: 10px; display: block; }
@@ -370,12 +375,12 @@
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .hero p { font-size: 1.1rem; }
-            .hero { padding: 120px 5% 80px; }
+            .hero { padding: 140px 5% 80px; min-height: 80vh; }
             .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
+            .mobile-menu-btn { display: flex !important; }
             .about-content, .contact-container { grid-template-columns: 1fr; }
             .hero-btns { flex-direction: column; align-items: center; gap: 15px; }
-            .btn { width: 100%; max-width: 300px; }
+            .btn { width: 100%; max-width: 300px; min-height: 44px; }
             .products-grid { grid-template-columns: 1fr; }
             .services-grid { grid-template-columns: 1fr; }
             .why-grid { grid-template-columns: 1fr; }
@@ -383,7 +388,7 @@
             .contact-info, .contact-form { padding: 40px 20px; }
             .section-title { font-size: 2.2rem; }
             .about-text h2 { font-size: 2rem; }
-            .whatsapp-float { bottom: 20px; right: 20px; width: 58px; height: 58px; }
+            .whatsapp-float { bottom: 20px; right: 20px; width: 58px; height: 58px; min-height: 44px; }
             .nav-container { padding: 0 15px; }
             .logo img { height: 40px; }
             .logo-text { font-size: 1rem; }
@@ -392,7 +397,7 @@
         @media (max-width: 576px) {
             .hero h1 { font-size: 2rem; line-height: 1.1; }
             .hero p { font-size: 1rem; }
-            .hero { padding: 100px 5% 60px; }
+            .hero { padding: 100px 5% 60px; min-height: 60vh; }
             .container { padding: 0 3%; }
             .features { padding: 60px 3%; }
             .products { padding: 60px 3%; }
@@ -401,7 +406,7 @@
             .why-us { padding: 60px 3%; }
             .contact { padding: 60px 3%; }
             footer { padding: 40px 3% 20px; }
-            .section-title { font-size: 1.8rem; }
+            .section-title { font-size: clamp(1.6rem, 4vw, 1.8rem); }
             .section-subtitle { font-size: 1rem; }
             .about-text h2 { font-size: 1.8rem; }
             .about-text p { font-size: 0.95rem; }
@@ -409,19 +414,19 @@
             .service-card { padding: 30px 20px; }
             .product-card { margin: 0 auto; max-width: 100%; }
             .contact-item { margin-bottom: 20px; }
-            .form-group input, .form-group textarea { padding: 10px 12px; font-size: 0.9rem; }
-            .btn { padding: 12px 25px; font-size: 0.9rem; }
-            .whatsapp-float { bottom: 15px; right: 15px; width: 52px; height: 52px; font-size: 24px; }
+            .form-group input, .form-group textarea { padding: 10px 12px; font-size: 0.9rem; min-height: 44px; }
+            .btn { padding: 12px 25px; font-size: 0.9rem; min-height: 44px; }
+            .whatsapp-float { bottom: 15px; right: 15px; width: 52px; height: 52px; font-size: 24px; min-height: 44px; }
         }
 
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.8rem; }
             .hero p { font-size: 0.95rem; max-width: 100%; }
-            .hero { padding: 80px 5% 50px; }
+            .hero { padding: 80px 5% 50px; min-height: 55vh; }
             .nav-container { padding: 0 10px; }
             .logo img { height: 35px; }
             .logo-text { font-size: 0.9rem; }
-            .mobile-menu-btn { font-size: 1.2rem; padding: 8px; width: 40px; height: 40px; }
+            .mobile-menu-btn { font-size: 1.2rem; padding: 8px; width: 40px; height: 40px; min-height: 44px; }
             .features-grid { gap: 20px; }
             .feature-card { padding: 20px 12px; }
             .feature-icon { font-size: 2.5rem; }
@@ -442,9 +447,9 @@
             .contact-item-icon { font-size: 1.3rem; }
             .footer-section h4 { font-size: 1.1rem; }
             .footer-section img { height: 60px; }
-            .qty-btn { width: 35px; height: 35px; font-size: 1.1rem; }
-            .qty-input { width: 50px; height: 35px; font-size: 1rem; }
-            .btn { min-height: 44px; } /* Better touch targets */
+            .qty-btn { width: 35px; height: 35px; font-size: 1.1rem; min-height: 44px; }
+            .qty-input { width: 50px; height: 35px; font-size: 1rem; min-height: 44px; }
+            .btn { min-height: 44px; }
         }
 
         /* Mobile Menu Styles */
@@ -496,7 +501,7 @@
         @media (max-width: 360px) {
             .hero h1 { font-size: 1.6rem; }
             .hero p { font-size: 0.9rem; }
-            .hero { padding: 70px 5% 40px; }
+            .hero { padding: 70px 5% 40px; min-height: 50vh; }
             .container { padding: 0 2%; }
             .features { padding: 50px 2%; }
             .products { padding: 50px 2%; }
@@ -513,7 +518,7 @@
             .product-info { padding: 12px; }
             .service-card { padding: 20px 12px; }
             .contact-info, .contact-form { padding: 30px 15px; }
-            .mobile-menu a { padding: 12px 15px; font-size: 0.9rem; }
+            .mobile-menu a { padding: 12px 15px; font-size: 0.9rem; min-height: 44px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
