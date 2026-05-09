@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blue Flame Gas Supply Limited - Reliable LPG gas supply and delivery in Lagos. Order cylinders, accessories & get same-day delivery!">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>Blue Flame Gas Supply LTD | Gas Delivery Lagos</title>
+    <style>
+        /* === BRAND COLORS - BLUE & WHITE ONLY === */
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --primary-light: #3399FF;
+            --primary-gradient: linear-gradient(135deg, #0066CC 0%, #004C99 100%);
+            --secondary: #0A1628;
+            --white: #FFFFFF;
+            --light-blue: #E6F2FF;
+            --lighter-blue: #F0F8FF;
+            --gray: #6B7B8C;
+            --text-dark: #1A1A1A;
+            --text-light: #FFFFFF;
+            --shadow-blue: rgba(0, 102, 204, 0.3);
+        }
+
+        /* === BASE STYLES === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(180deg, #f7faff 0%, #ffffff 100%);
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+        /* === BUTTONS === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: var(--white);
+            box-shadow: 0 4px 15px var(--shadow-blue);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-blue);
+        }
+        .btn-outline {
+            border: 2px solid var(--white);
+            color: var(--white);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            background: var(--white);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes logoEntrance { from { opacity: 0; transform: translateY(-12px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+
+        /* === NAVIGATION === */
+        nav {
+            background: rgba(255,255,255,0.95);
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 12px 40px rgba(24, 66, 122, 0.12);
+            backdrop-filter: blur(14px);
+            transition: all 0.3s ease;
+        }
+        nav.scrolled { background: rgba(255,255,255,0.98); box-shadow: 0 18px 50px rgba(24, 66, 122, 0.14); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; gap: 20px; }
+        .logo { display: flex; align-items: center; gap: 14px; animation: logoEntrance 0.9s ease-out both; }
+        .logo img { height: 56px; width: auto; transition: transform 0.4s ease; }
+        .logo img:hover { transform: scale(1.05) rotate(3deg); }
+        .logo-text { font-size: 1.6rem; font-weight: 800; color: var(--primary); line-height: 1.05; letter-spacing: 0.01em; }
+        .logo-text span { color: var(--secondary); display: block; font-size: 0.95em; margin-top: -4px; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-weight: 600; font-size: 0.95rem; color: var(--secondary); position: relative; }
+        .nav-links a::after { content:''; position:absolute; bottom:-6px; left:0; width:0; height:2px; background:var(--primary); transition:width 0.3s ease; }
+        .nav-links a:hover::after { width:100%; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-cta { background: var(--primary-gradient); color: var(--white)!important; padding: 12px 30px; border-radius: 50px; animation: pulse 2.5s infinite; letter-spacing: 0.02em; box-shadow: 0 12px 30px rgba(0,102,204,0.18); }
+        .nav-cta:hover { animation: none; transform: translateY(-1px) scale(1.02); }
+        .mobile-menu-btn { display: none; background: rgba(255,255,255,0.96); border: 1px solid rgba(0,102,204,0.15); width: 52px; height: 52px; border-radius: 50%; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(24, 66, 122, 0.12); transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease; }
+        .mobile-menu-btn:hover { background: rgba(255,255,255,1); box-shadow: 0 14px 32px rgba(24, 66, 122, 0.16); }
+        .menu-icon { position: relative; width: 24px; height: 2px; background: var(--primary); display: inline-block; transition: background 0.25s ease; }
+        .menu-icon::before, .menu-icon::after { content: ''; position: absolute; width: 100%; height: 2px; background: var(--primary); left: 0; transition: transform 0.25s ease; }
+        @media (min-width: 769px) {
+            .mobile-menu-btn { display: none !important; }
+        }
+        .menu-icon::before { top: -8px; }
+        .menu-icon::after { top: 8px; }
+        .mobile-menu-btn.open { background: rgba(255,255,255,1); box-shadow: 0 14px 32px rgba(24, 66, 122, 0.18); }
+        .mobile-menu-btn.open .menu-icon { background: transparent; }
+        .mobile-menu-btn.open .menu-icon::before { transform: translateY(8px) rotate(45deg); }
+        .mobile-menu-btn.open .menu-icon::after { transform: translateY(-8px) rotate(-45deg); }
+
+        /* === HERO === */
+        /* === HERO SECTION === */
+.hero {
+    background-image: url(./gas.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 180px 5% 120px;
+    min-height: calc(100vh - 110px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(5, 15, 30, 0.85) 0%, rgba(0, 80, 160, 0.78) 100%);
+    z-index: 1;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.06), transparent 40%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    margin-bottom: 22px;
+    line-height: 1.1;
+    font-weight: 800;
+    position: relative;
+    z-index: 3;
+    color: #FFFFFF;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    animation: fadeInUp 1s ease;
+}
+
+.hero h1 span {
+    color: #84c1ff;
+    text-shadow: 0 0 30px rgba(132, 193, 255, 0.6);
+}
+
+.hero p {
+    font-size: 1.28rem;
+    margin-bottom: 42px;
+    color: rgba(230, 242, 255, 0.95);
+    max-width: 720px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 1s ease 0.2s both;
+}
+
+.hero-btns {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease 0.5s both;
+}
+
+.hero .btn {
+    min-width: 180px;
+}
+
+.hero .btn.btn-outline {
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+}
+
+.hero .btn.btn-outline:hover {
+    background: rgba(255,255,255,0.92);
+    color: var(--primary);
+}
+
+.products-grid .product-card,
+.why-grid .why-card,
+.about-image,
+.contact-container {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.products-grid .product-card.visible,
+.why-grid .why-card.visible,
+.about-image.visible,
+.contact-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+}
+
+.section-title {
+    letter-spacing: 0.05em;
+}
+
+.section-subtitle {
+    letter-spacing: 0.01em;
+    max-width: 720px;
+    margin: 0 auto 35px;
+}
+
+        /* === FEATURES === */
+        .features { padding: 80px 5%; background: var(--lighter-blue); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: var(--white); padding: 35px 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,102,204,0.1); transition: all 0.4s ease; border: 2px solid transparent; }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,102,204,0.2); border-color: var(--primary); }
+        .feature-icon { font-size: 3rem; margin-bottom: 20px; display: inline-block; animation: float 3s ease-in-out infinite; }
+        .feature-card:hover .feature-icon { animation: pulse 0.5s ease; }
+        .feature-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
+        .feature-card p { color: var(--gray); font-size: 0.95rem; }
+
+        /* === ABOUT === */
+        .about { padding: 100px 5%; max-width: 1200px; margin: 0 auto; }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .about-text { animation: slideInLeft 1s ease; }
+        .about-text h2 { font-size: 2.5rem; color: var(--secondary); margin-bottom: 20px; position: relative; }
+        .about-text h2::after { content:''; position:absolute; bottom:-10px; left:0; width:80px; height:4px; background:var(--primary-gradient); border-radius:2px; }
+        .about-text p { color: var(--gray); margin-bottom: 20px; line-height: 1.8; }
+        .about-image {
+            background-image: url(./supply.png);
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slideInRight 5s ease;
+            box-shadow: 0 20px 60px rgba(0,102,204,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-image::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(-45deg, rgba(0,102,204,0.85), rgba(0,76,153,0.85), rgba(10,22,40,0.85)); background-size:400% 400%; animation: gradientShift 8s ease infinite; z-index: 1; }
+        .image-content { position: relative; z-index: 2; text-align: center; color: #fff; padding: 20px 40px; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; }
+        .image-content h3 { font-size: 2rem; margin: 0 0 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .image-content p { font-size: 1.2rem; margin: 0; opacity: 0.9; }
+
+        /* === PRODUCTS === */
+        .products { padding: 100px 5%; background: var(--white); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: var(--white); border-radius: 16px; border: 1px solid rgba(0,102,204,0.15); overflow: hidden; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,102,204,0.1); }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,102,204,0.2); border-color: var(--primary); }
+        .product-image { position: relative; height: 250px; background: var(--lighter-blue); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .product-image img { width: 100%; height: 100%; object-fit: contain; padding: 16px; }
+        .product-badge { position: absolute; top: 12px; left: 12px; background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+        .product-badge.hot { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .product-info { padding: 20px; }
+        .product-info h3 { font-size: 1.25rem; margin-bottom: 8px; color: var(--secondary); }
+        .product-desc { font-size: 0.9rem; color: var(--gray); margin-bottom: 16px; }
+        .product-price { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
+        .original-price { font-size: 1rem; color: var(--gray); text-decoration: line-through; margin-left: 8px; }
+
+        /* === QUANTITY SELECTOR === */
+        .quantity-selector { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px 0; }
+        .qty-btn { width: 40px; height: 40px; border: 2px solid var(--primary-light); background: var(--white); color: var(--primary); font-size: 1.25rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; }
+        .qty-btn:hover { background: var(--primary); color: var(--white); }
+        .qty-input { width: 60px; height: 40px; text-align: center; font-size: 1.125rem; font-weight: 700; border: 2px solid #E2E8F0; border-radius: 10px; }
+
+        /* === SERVICES === */
+        .services { padding: 100px 5%; background: var(--secondary); color: var(--white); }
+        .section-title { text-align: center; font-size: 2.8rem; margin-bottom: 15px; animation: fadeIn 1s ease; }
+        .section-subtitle { text-align: center; color: #B0C4DE; margin-bottom: 60px; font-size: 1.1rem; animation: fadeIn 1s ease 0.3s both; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; max-width: 1200px; margin: 0 auto; }
+        .service-card { background: rgba(255,255,255,0.1); padding: 40px 30px; border-radius: 16px; border: 2px solid rgba(255,255,255,0.2); transition: all 0.4s ease; backdrop-filter: blur(10px); }
+        .service-card:hover { background: rgba(255,255,255,0.15); border-color: var(--primary-light); transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,102,204,0.3); }
+        .service-card h3 { color: var(--white); font-size: 1.5rem; margin-bottom: 15px; }
+        .service-card p { color: #B0C4DE; line-height: 1.8; }
+
+        /* === WHY CHOOSE US === */
+        .why-us { padding: 100px 5%; max-width: 1200px; margin: 0 auto; }
+        .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .why-card { display: flex; gap: 20px; align-items: flex-start; transition: all 0.4s ease; }
+        .why-card:hover { transform: translateX(10px); }
+        .why-number { background: var(--primary-gradient); color: var(--white); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 15px var(--shadow-blue); transition: all 0.4s ease; }
+        .why-card:hover .why-number { transform: scale(1.1); box-shadow: 0 8px 25px var(--shadow-blue); }
+        .why-card h3 { color: var(--secondary); margin-bottom: 10px; }
+        .why-card p { color: var(--gray); }
+
+        /* === CONTACT === */
+        .contact { padding: 100px 5%; background: linear-gradient(135deg, var(--lighter-blue) 0%, var(--light-blue) 100%); }
+        .contact-container { max-width: 1000px; margin: 0 auto; background: var(--white); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,102,204,0.15); overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; animation: fadeInUp 1s ease; }
+        .contact-info { background: var(--primary-gradient); color: var(--white); padding: 60px 40px; }
+        .contact-info h3 { font-size: 1.8rem; margin-bottom: 30px; }
+        .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; transition: transform 0.3s ease; }
+        .contact-item:hover { transform: translateX(10px); }
+        .contact-item-icon { font-size: 1.5rem; }
+        .contact-form { padding: 60px 40px; }
+        .contact-form h3 { color: var(--secondary); margin-bottom: 30px; font-size: 1.8rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--secondary); font-weight: 600; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(0,102,204,0.2); }
+        .form-group textarea { height: 120px; resize: vertical; }
+
+        /* === FOOTER === */
+        footer { background: var(--secondary); color: #B0C4DE; padding: 60px 5% 30px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
+        .footer-section h4 { color: var(--white); margin-bottom: 20px; font-size: 1.2rem; }
+        .footer-section p, .footer-section a { color: #B0C4DE; margin-bottom: 10px; display: block; }
+        .footer-section a:hover { color: var(--primary-light); transform: translateX(5px); }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* === FLOATING WHATSAPP === */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: var(--primary-gradient);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 6px 20px rgba(0,102,204,0.4);
+            z-index: 9999;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .whatsapp-float:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 30px rgba(0,102,204,0.6); }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .hero { padding: 120px 5% 80px; }
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .about-content, .contact-container { grid-template-columns: 1fr; }
+            .hero-btns { flex-direction: column; align-items: center; gap: 15px; }
+            .btn { width: 100%; max-width: 300px; }
+            .products-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
+            .why-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .contact-info, .contact-form { padding: 40px 20px; }
+            .section-title { font-size: 2.2rem; }
+            .about-text h2 { font-size: 2rem; }
+            .whatsapp-float { bottom: 20px; right: 20px; width: 58px; height: 58px; }
+            .nav-container { padding: 0 15px; }
+            .logo img { height: 40px; }
+            .logo-text { font-size: 1rem; }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 { font-size: 2rem; line-height: 1.1; }
+            .hero p { font-size: 1rem; }
+            .hero { padding: 100px 5% 60px; }
+            .container { padding: 0 3%; }
+            .features { padding: 60px 3%; }
+            .products { padding: 60px 3%; }
+            .about { padding: 60px 3%; }
+            .services { padding: 60px 3%; }
+            .why-us { padding: 60px 3%; }
+            .contact { padding: 60px 3%; }
+            footer { padding: 40px 3% 20px; }
+            .section-title { font-size: 1.8rem; }
+            .section-subtitle { font-size: 1rem; }
+            .about-text h2 { font-size: 1.8rem; }
+            .about-text p { font-size: 0.95rem; }
+            .feature-card { padding: 25px 15px; }
+            .service-card { padding: 30px 20px; }
+            .product-card { margin: 0 auto; max-width: 100%; }
+            .contact-item { margin-bottom: 20px; }
+            .form-group input, .form-group textarea { padding: 10px 12px; font-size: 0.9rem; }
+            .btn { padding: 12px 25px; font-size: 0.9rem; }
+            .whatsapp-float { bottom: 15px; right: 15px; width: 52px; height: 52px; font-size: 24px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 0.95rem; max-width: 100%; }
+            .hero { padding: 80px 5% 50px; }
+            .nav-container { padding: 0 10px; }
+            .logo img { height: 35px; }
+            .logo-text { font-size: 0.9rem; }
+            .mobile-menu-btn { font-size: 1.2rem; padding: 8px; width: 40px; height: 40px; }
+            .features-grid { gap: 20px; }
+            .feature-card { padding: 20px 12px; }
+            .feature-icon { font-size: 2.5rem; }
+            .feature-card h3 { font-size: 1.1rem; }
+            .feature-card p { font-size: 0.85rem; }
+            .products-grid { gap: 20px; }
+            .product-info { padding: 15px; }
+            .product-info h3 { font-size: 1.1rem; }
+            .product-price { font-size: 1.3rem; }
+            .services-grid { gap: 25px; }
+            .service-card { padding: 25px 15px; }
+            .service-card h3 { font-size: 1.3rem; }
+            .service-card p { font-size: 0.9rem; }
+            .why-card { flex-direction: column; text-align: center; gap: 15px; }
+            .why-number { align-self: center; }
+            .contact-info h3, .contact-form h3 { font-size: 1.5rem; }
+            .contact-item { gap: 12px; }
+            .contact-item-icon { font-size: 1.3rem; }
+            .footer-section h4 { font-size: 1.1rem; }
+            .footer-section img { height: 60px; }
+            .qty-btn { width: 35px; height: 35px; font-size: 1.1rem; }
+            .qty-input { width: 50px; height: 35px; font-size: 1rem; }
+            .btn { min-height: 44px; } /* Better touch targets */
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            display: none;
+            opacity: 0;
+            transform: translateY(-12px);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: 0 4px 20px rgba(0,102,204,0.2);
+            z-index: 1000;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .mobile-menu.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .mobile-menu li {
+            border-bottom: 1px solid rgba(0,102,204,0.1);
+        }
+        .mobile-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .mobile-menu a:hover {
+            background: var(--lighter-blue);
+            color: var(--primary);
+        }
+        .mobile-menu .nav-cta {
+            background: var(--primary-gradient);
+            color: var(--white);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        @media (max-width: 360px) {
+            .hero h1 { font-size: 1.6rem; }
+            .hero p { font-size: 0.9rem; }
+            .hero { padding: 70px 5% 40px; }
+            .container { padding: 0 2%; }
+            .features { padding: 50px 2%; }
+            .products { padding: 50px 2%; }
+            .about { padding: 50px 2%; }
+            .services { padding: 50px 2%; }
+            .why-us { padding: 50px 2%; }
+            .contact { padding: 50px 2%; }
+            footer { padding: 30px 2% 15px; }
+            .section-title { font-size: 1.6rem; }
+            .about-text h2 { font-size: 1.6rem; }
+            .feature-card { padding: 18px 10px; }
+            .feature-icon { font-size: 2.2rem; margin-bottom: 15px; }
+            .product-card { max-width: 100%; }
+            .product-info { padding: 12px; }
+            .service-card { padding: 20px 12px; }
+            .contact-info, .contact-form { padding: 30px 15px; }
+            .mobile-menu a { padding: 12px 15px; font-size: 0.9rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+            html { scroll-behavior: auto; }
+        }
+        :focus { outline: 3px solid var(--primary); outline-offset: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="Blue Flame Gas Logo">
+                <span class="logo-text">Blue Flame<br><span>Gas Supply LTD</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#products">Products</a>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#contact" class="nav-cta">Order Now</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle mobile menu" aria-expanded="false"><span class="menu-icon"></span></button>
+        </div>
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact" class="nav-cta">Order Now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Reliable <span>Gas Supply</span><br>Delivered to Your Door</h1>
+        <p>Blue Flame Gas Supply LTD provides safe, affordable, and timely LPG gas delivery across Lagos. Order cylinders & accessories with same-day delivery!</p>
+        <div class="hero-btns">
+            <a href="#products" class="btn btn-primary">🔥 Shop Now</a>
+            <a href="tel:08106606098" class="btn btn-outline">📞 Call: 08106606098</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Delivery</h3>
+                <p>Same-day delivery available across Lagos metropolis</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🛡️</div>
+                <h3>Safe & Certified</h3>
+                <p>DPR certified gas with safety-checked cylinders</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">💰</div>
+                <h3>Best Prices</h3>
+                <p>Competitive pricing with no hidden charges</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📍</div>
+                <h3>Wide Coverage</h3>
+                <p>Serving Ibeju-Lekki, Ajah, Victoria Island & more</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <h2 style="color: #0066CC;" class="section-title"> Our Products</h2>
+        <p class="section-subtitle">Quality-certified cylinders & accessories</p>
+        
+        <div class="products-grid">
+            <!-- 3kg -->
+            <div class="product-card">
+                <div class="product-image">
+                    <span class="product-badge">Lightweight</span>
+                    <img src="images/cylinder-3kg.png" alt="3kg Gas Cylinder">
+                </div>
+                <div class="product-info">
+                    <h3>3kg Gas Cylinder</h3>
+                    <div class="product-price">₦20,500</div>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" data-target="qty-3kg">−</button>
+                        <input type="number" id="qty-3kg" class="qty-input" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn plus" data-target="qty-3kg">+</button>
+                    </div>
+                    <button class="btn btn-primary whatsapp-order" data-product="3kg Gas Cylinder" data-price="20500" style="width:100%">📱 Order on WhatsApp</button>
+                </div>
+            </div>
+
+            <!-- 5kg -->
+            <div class="product-card">
+                <div class="product-image">
+                    <span class="product-badge hot">Popular</span>
+                    <img src="images/cylinder-5kg.png" alt="5kg Gas Cylinder">
+                </div>
+                <div class="product-info">
+                    <h3>5kg Gas Cylinder</h3>
+                    <div class="product-price">₦25,500</div>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" data-target="qty-5kg">−</button>
+                        <input type="number" id="qty-5kg" class="qty-input" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn plus" data-target="qty-5kg">+</button>
+                    </div>
+                    <button class="btn btn-primary whatsapp-order" data-product="5kg Gas Cylinder" data-price="9500" style="width:100%">📱 Order on WhatsApp</button>
+                </div>
+            </div>
+
+            <!-- 6kg -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="images/cylinder-6kg.png" alt="6kg Gas Cylinder">
+                </div>
+                <div class="product-info">
+                    <h3>6kg Gas Cylinder</h3>
+                    <div class="product-price">₦28,000</div>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" data-target="qty-6kg">−</button>
+                        <input type="number" id="qty-6kg" class="qty-input" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn plus" data-target="qty-6kg">+</button>
+                    </div>
+                    <button class="btn btn-primary whatsapp-order" data-product="6kg Gas Cylinder" data-price="11000" style="width:100%">📱 Order on WhatsApp</button>
+                </div>
+            </div>
+
+            <!-- 11kg -->
+            <div class="product-card">
+                <div class="product-image">
+                    <span class="product-badge">Commercial</span>
+                    <img src="images/cylinder-11kg.png" alt="11kg Gas Cylinder">
+                </div>
+                <div class="product-info">
+                    <h3>11kg Gas Cylinder</h3>
+                    <div class="product-price">₦40,500</div>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" data-target="qty-11kg">−</button>
+                        <input type="number" id="qty-11kg" class="qty-input" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn plus" data-target="qty-11kg">+</button>
+                    </div>
+                    <button class="btn btn-primary whatsapp-order" data-product="11kg Gas Cylinder" data-price="18500" style="width:100%">📱 Order on WhatsApp</button>
+                </div>
+            </div>
+
+            <!-- 12.5kg -->
+            <div class="product-card">
+                <div class="product-image">
+                    <span class="product-badge hot">Best Value</span>
+                    <img src="images/cylinder-12.5kg.png" alt="12.5kg Gas Cylinder">
+                </div>
+                <div class="product-info">
+                    <h3>12.5kg Gas Cylinder</h3>
+                    <div class="product-price">₦50,000</div>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" data-target="qty-12kg">−</button>
+                        <input type="number" id="qty-12kg" class="qty-input" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn plus" data-target="qty-12kg">+</button>
+                    </div>
+                    <button class="btn btn-primary whatsapp-order" data-product="12.5kg Gas Cylinder" data-price="20000" style="width:100%">📱 Order on WhatsApp</button>
+                </div>
+            </div>
+
+            
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Your Trusted Gas Partner in Lagos</h2>
+                <p>Blue Flame Gas Supply Limited is a leading LPG gas supplier committed to providing safe, reliable, and affordable gas solutions to homes and businesses across Lagos State.</p>
+                <p>With years of experience and a dedication to customer satisfaction, we ensure every delivery meets the highest safety standards. Our team is trained to handle gas cylinders with care and professionalism.</p>
+                <p><strong>📍 Location:</strong> Blue Flame Gas Depot, Uba Pharmacy Road, Awoyaya, Ibeju-Lekki, Lagos State</p>
+            </div>
+            <div class="about-image">
+                <div class="image-content">
+                    <h3>🚛 Fast & Reliable</h3>
+                    <p>Same-Day Gas Delivery</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-subtitle">Complete gas solutions for your home and business</p>
+        <div class="services-grid">
+            <div class="service-card animate-on-scroll">
+                <h3>🏠 Domestic Gas Supply</h3>
+                <p>Regular gas refills for households. We deliver 3kg, 5kg, 6kg, 11kg, and 12.5kg cylinders right to your door.</p>
+            </div>
+            <div class="service-card animate-on-scroll">
+                <h3>🏢 Commercial Gas Supply</h3>
+                <p>Bulk gas supply for restaurants, hotels, and businesses. Competitive rates for high-volume customers.</p>
+            </div>
+            <div class="service-card animate-on-scroll">
+                <h3>🔄 Cylinder Exchange</h3>
+                <p>Empty cylinder for full cylinder exchange service. Fast, safe, and convenient.</p>
+            </div>
+            <div class="service-card animate-on-scroll">
+                <h3>🔧 Safety Inspection</h3>
+                <p>Free safety checks on your gas connections and equipment with every delivery.</p>
+            </div>
+            <div class="service-card animate-on-scroll">
+                <h3>📦 Accessories Sales</h3>
+                <p>Regulators, hoses, clamps, safety kits & more. All certified and warranty-backed.</p>
+            </div>
+            <div class="service-card animate-on-scroll">
+                <h3>🚚 Scheduled Delivery</h3>
+                <p>Set up automatic monthly deliveries so you never run out of gas unexpectedly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="why-us" class="why-us">
+        <h2 class="section-title" style="color: var(--secondary);">Why Choose Blue Flame Gas?</h2>
+        <p class="section-subtitle">We put safety and customer satisfaction first</p>
+        <div class="why-grid">
+            <div class="why-card animate-on-scroll">
+                <div class="why-number">1</div>
+                <div><h3>DPR Certified</h3><p>Fully licensed and compliant with all Nigerian gas safety regulations</p></div>
+            </div>
+            <div class="why-card animate-on-scroll">
+                <div class="why-number">2</div>
+                <div><h3>Quality Guaranteed</h3><p>Pure LPG gas with accurate weight measurement on every refill</p></div>
+            </div>
+            <div class="why-card animate-on-scroll">
+                <div class="why-number">3</div>
+                <div><h3>Trained Personnel</h3><p>Our delivery team is trained in safe handling and installation</p></div>
+            </div>
+            <div class="why-card animate-on-scroll">
+                <div class="why-number">4</div>
+                <div><h3>24/7 Support</h3><p>Customer service available to answer your questions anytime</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Get In Touch</h3>
+                <div class="contact-item">
+                    <span class="contact-item-icon">📞</span>
+                    <div><strong>Phone:</strong><br>08106606098</div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-item-icon">📍</span>
+                    <div><strong>Address:</strong><br>Blue Flame Gas Depot<br>Uba Pharmacy Road, Awoyaya<br>Ibeju-Lekki, Lagos State</div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-item-icon">⏰</span>
+                    <div><strong>Hours:</strong><br>Mon-Sat: 7AM-9PM<br>Sunday: 9AM-6PM</div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-item-icon">✉️</span>
+                    <div><strong>Email:</strong><br>blueflamesgassupply@gmail.com</div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <h3>Request a Delivery</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="08012345678" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (₦)</label>
+                        <input type="number" id="amount" placeholder="e.g., 5000" min="1300" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery Address</label>
+                        <textarea id="address" placeholder="Your full delivery address" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Submit Order</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="logo.png" alt="Blue Flame Gas Logo" style="height:80px; margin-bottom:15px;">
+                <h4>BLUE FLAME GAS SUPPLY LTD</h4>
+                <p>Reliable LPG gas supply and delivery services across Lagos State.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="#products">Products</a>
+                <a href="#about">About Us</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📞 08106606098</p>
+                <p>📍 Ibeju-Lekki, Lagos</p>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">WhatsApp</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Blue Flame Gas Supply Limited. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/2348106606098?text=Hello%20Blue%20Flame%20Gas!%20I%20need%20help%20with%20an%20order." 
+       class="whatsapp-float" 
+       target="_blank" 
+       aria-label="Chat on WhatsApp">💬</a>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const WHATSAPP_NUMBER = '2348106606098';
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                const isActive = mobileMenu.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('open', isActive);
+                mobileMenuBtn.setAttribute('aria-expanded', String(isActive));
+            });
+
+            // Close mobile menu when clicking a link
+            document.querySelectorAll('.mobile-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('open');
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('open');
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                nav.classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            // Scroll animations
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+            document.querySelectorAll('.products-grid .product-card, .why-grid .why-card, .about-image, .contact-container').forEach(el => {
+                el.classList.add('animate-on-scroll');
+                observer.observe(el);
+            });
+
+            // Quantity selectors
+            document.querySelectorAll('.qty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = document.getElementById(this.getAttribute('data-target'));
+                    let val = parseInt(target.value) || 1;
+                    if (this.classList.contains('plus') && val < 20) target.value = val + 1;
+                    else if (this.classList.contains('minus') && val > 1) target.value = val - 1;
+                });
+            });
+
+            // WhatsApp order buttons
+            document.querySelectorAll('.whatsapp-order').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const product = this.getAttribute('data-product');
+                    const price = parseInt(this.getAttribute('data-price'));
+                    const qtyInput = this.closest('.product-info').querySelector('.qty-input');
+                    const qty = parseInt(qtyInput.value) || 1;
+                    const total = price * qty;
+
+                    const msg = `Hello Blue Flame Gas! 🔥
+I want to order:
+📦 Product: ${product}
+🔢 Quantity: ${qty}
+💰 Unit Price: ₦${price.toLocaleString()}
+💵 Total: ₦${total.toLocaleString()}
+
+📍 Delivery Address: 
+📞 My Phone: 
+
+Please confirm availability. Thank you!`;
+
+                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                });
+            });
+
+            // Contact form to WhatsApp
+            document.querySelector('.contact-form form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const amount = document.getElementById('amount').value;
+                const address = document.getElementById('address').value;
+
+                const msg = `New Order Request! 🚚
+Name: ${name}
+Phone: ${phone}
+Budget: ₦${amount}
+Address: ${address}
+
+Please contact this customer to confirm their order.`;
+
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                this.reset();
+                alert('Thank you! Your order request has been sent via WhatsApp.');
+            });
+        });
+    </script>
+</body>
+</html>
