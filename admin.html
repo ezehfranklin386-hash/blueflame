@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Flame Admin Dashboard</title>
+    <style>
+        /* === RESET & VARIABLES === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #0A1628;
+            --white: #FFFFFF;
+            --light-blue: #E6F2FF;
+            --gray: #6B7B8C;
+            --danger: #E53E3E;
+            --success: #38A169;
+            --warning: #D69E2E;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);
+            color: var(--secondary);
+            min-height: 100vh;
+        }
+
+        /* === LOGIN PAGE === */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+        }
+        .login-card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .login-card h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .login-card p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
+        }
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .hidden { display: none !important; }
+
+        /* === ADMIN DASHBOARD === */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--secondary) 0%, #1a2f4a 100%);
+            color: var(--white);
+            padding: 30px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+        .sidebar-logo img { height: 40px; width: auto; }
+        .sidebar-logo h3 { font-size: 1.3rem; }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #B0C4DE;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(51, 153, 255, 0.2);
+            color: #3399FF;
+        }
+        .sidebar-logout {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--danger);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover { background: #d32f2f; }
+
+        /* === MAIN CONTENT === */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h2 {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        .header-info {
+            text-align: right;
+            color: var(--gray);
+        }
+        .header-info p {
+            font-size: 0.9rem;
+        }
+
+        /* === TABS === */
+        .tab-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
+            overflow: hidden;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #E0E0E0;
+            background: #f9f9f9;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-content {
+            padding: 30px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* === FORMS & INPUTS === */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+        }
+        .form-group textarea { height: 100px; resize: vertical; }
+
+        /* === BUTTONS === */
+        .btn-primary, .btn-secondary, .btn-danger, .btn-success {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3); }
+        .btn-secondary {
+            background: #E0E0E0;
+            color: var(--secondary);
+        }
+        .btn-secondary:hover { background: #d0d0d0; }
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        .btn-danger:hover { background: #d32f2f; }
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        .btn-success:hover { background: #2e7d32; }
+
+        /* === TABLES === */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background: #f0f8ff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid #E0E0E0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        tr:hover { background: #f9f9f9; }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-success { background: #C6F6D5; color: var(--success); }
+        .status-pending { background: #FEEBC8; color: var(--warning); }
+        .status-danger { background: #FED7D7; color: var(--danger); }
+
+        /* === CARDS === */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* === PRODUCT GRID === */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .product-item {
+            background: var(--white);
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .product-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.15);
+        }
+        .product-image-box {
+            background: #f0f8ff;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .product-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .product-name {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        .product-price {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        .product-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        /* === ALERTS & MESSAGES === */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .alert-success { background: #C6F6D5; color: var(--success); border-left: 4px solid var(--success); }
+        .alert-danger { background: #FED7D7; color: var(--danger); border-left: 4px solid var(--danger); }
+        .alert-warning { background: #FEEBC8; color: var(--warning); border-left: 4px solid var(--warning); }
+        .alert-info { background: #BEE3F8; color: var(--primary); border-left: 4px solid var(--primary); }
+
+        /* === STATS === */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, var(--light-blue) 0%, #f0f8ff 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .admin-wrapper { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 20px;
+            }
+            .main-content { margin-left: 0; padding: 20px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-info { text-align: left; margin-top: 10px; }
+            .tab-buttons { flex-wrap: wrap; }
+            .tab-btn { flex: 1 1 50%; }
+            .form-row { grid-template-columns: 1fr; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 30px 20px; }
+            .main-content { padding: 15px; }
+            .header h2 { font-size: 1.5rem; }
+            .tab-buttons { flex-direction: column; }
+            .tab-btn { border-bottom: 2px solid #E0E0E0; }
+            .tab-btn.active { border-left: 3px solid var(--primary); border-bottom: none; }
+            .table-container { overflow-x: auto; }
+            table { font-size: 0.85rem; }
+            .product-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="login-page" class="login-container">
+    <div class="login-card">
+        <h1>🔐 Admin Login</h1>
+        <p>Blue Flame Gas Supply Dashboard</p>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter admin password" required>
+        </div>
+        <button class="login-btn" onclick="handleLogin()">Login</button>
+        <div id="error-msg" class="error-msg hidden"></div>
+    </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="admin-page" class="admin-wrapper hidden">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="logo.png" alt="Logo" style="height: 30px;">
+            <h3>Blue Flame</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a class="tab-link active" onclick="showTab('dashboard', event)">📊 Dashboard</a></li>
+            <li><a class="tab-link" onclick="showTab('prices', event)">💰 Gas Price</a></li>
+            <li><a class="tab-link" onclick="showTab('products', event)">📦 Products</a></li>
+            <li><a class="tab-link" onclick="showTab('sales', event)">📈 Sales Records</a></li>
+            <li><a class="tab-link" onclick="showTab('settings', event)">⚙️ Settings</a></li>
+        </ul>
+        <div class="sidebar-logout">
+            <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="header">
+            <h2 id="page-title">📊 Dashboard</h2>
+            <div class="header-info">
+                <p>Welcome, Admin!</p>
+                <p id="current-time"></p>
+            </div>
+        </div>
+
+        <!-- TAB CONTAINER -->
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('dashboard', event)">Dashboard</button>
+                <button class="tab-btn" onclick="showTab('prices', event)">Gas Price</button>
+                <button class="tab-btn" onclick="showTab('products', event)">Products</button>
+                <button class="tab-btn" onclick="showTab('sales', event)">Sales</button>
+                <button class="tab-btn" onclick="showTab('settings', event)">Settings</button>
+            </div>
+
+            <!-- TAB CONTENT -->
+            <div class="tab-content">
+
+                <!-- DASHBOARD TAB -->
+                <div id="dashboard" class="tab-pane active">
+                    <h3>Dashboard Overview</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">💰 Gas Price/KG</div>
+                            <div class="stat-value">₦<span id="display-dashboard-price">950</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">📊 Total Sales</div>
+                            <div class="stat-value">₦<span id="total-sales">0</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">📦 Products</div>
+                            <div class="stat-value" id="total-products">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">🚚 Deliveries</div>
+                            <div class="stat-value" id="total-deliveries">0</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Recent Sales</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-sales-body">
+                                    <tr><td colspan="4" style="text-align: center; color: var(--gray);">No sales recorded yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAS PRICE TAB -->
+                <div id="prices" class="tab-pane">
+                    <h3>⚙️ Manage Gas Price</h3>
+                    <div class="card" style="max-width: 400px;">
+                        <div class="form-group">
+                            <label for="admin-price">Gas Price per KG (₦)</label>
+                            <input type="number" id="admin-price" placeholder="e.g., 950" min="100" step="10">
+                        </div>
+                        <button class="btn-primary" onclick="updateGasPrice()">✅ Update Price</button>
+                        <p style="color: var(--gray); margin-top: 15px; font-size: 0.9rem;">
+                            ℹ️ This price will be used in the delivery calculator on your website.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- PRODUCTS TAB -->
+                <div id="products" class="tab-pane">
+                    <h3>📦 Manage Products</h3>
+                    
+                    <div class="card">
+                        <h4>Add/Edit Product</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-name">Product Name</label>
+                                <input type="text" id="product-name" placeholder="e.g., 5kg Gas Cylinder">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-price">Price (₦)</label>
+                                <input type="number" id="product-price" placeholder="e.g., 25500" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-image">Image URL</label>
+                                <input type="text" id="product-image" placeholder="e.g., images/cylinder-5kg.png">
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="addProduct()">➕ Add Product</button>
+                    </div>
+
+                    <div class="product-grid" id="products-grid">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- SALES TAB -->
+                <div id="sales" class="tab-pane">
+                    <h3>📈 Sales Records</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sale-type">Type</label>
+                            <select id="sale-type">
+                                <option value="">All Types</option>
+                                <option value="delivery">Delivery</option>
+                                <option value="product">Product Sold</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>Add New Sale</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sale-date">Date</label>
+                                <input type="date" id="sale-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="sale-type-input">Type</label>
+                                <select id="sale-type-input">
+                                    <option value="delivery">Delivery</option>
+                                    <option value="product">Product Sold</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sale-amount">Amount (₦)</label>
+                                <input type="number" id="sale-amount" placeholder="e.g., 5000" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sale-details">Details</label>
+                            <textarea id="sale-details" placeholder="e.g., Customer name, phone, product details"></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="recordSale()">💾 Record Sale</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Details</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-table-body">
+                                <tr><td colspan="5" style="text-align: center; color: var(--gray);">No sales recorded yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SETTINGS TAB -->
+                <div id="settings" class="tab-pane">
+                    <h3>⚙️ Admin Settings</h3>
+                    
+                    <div class="card">
+                        <h4>Change Admin Password</h4>
+                        <div class="form-group" style="max-width: 400px;">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" placeholder="Enter new password">
+                        </div>
+                        <button class="btn-primary" onclick="updatePassword()">Update Password</button>
+                    </div>
+
+                    <div class="card">
+                        <h4>⚠️ Danger Zone</h4>
+                        <p style="color: var(--gray); margin-bottom: 15px;">
+                            Click the button below to delete all sales records. This action cannot be undone.
+                        </p>
+                        <button class="btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // ===== SUPABASE CONFIGURATION =====
+        // 🚨 ADD YOUR SUPABASE CREDENTIALS HERE
+        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co'; // Replace with your URL
+        const SUPABASE_KEY = 'YOUR_ANON_KEY'; // Replace with your Anon Key
+        
+        let supabase;
+        const ADMIN_PASSWORD = 'blueflame2024';
+
+        const $ = id => document.getElementById(id);
+        const formatCurrency = value => `₦${Number(value).toLocaleString()}`;
+        const parseNumber = value => Number(value) || 0;
+
+        // Initialize Supabase
+        try {
+            const { createClient } = window.supabase;
+            supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error('Supabase not loaded. Check your credentials:', e);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            setCurrentDate();
+            setInterval(setCurrentDate, 60000);
+            
+            // Check if logged in
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            if (isLoggedIn) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('admin-page').classList.remove('hidden');
+                await loadDashboard();
+                await loadProducts();
+                await loadSalesRecords();
+            }
+            
+            document.getElementById('sale-date').valueAsDate = new Date();
+        });
+
+        // Set current time
+        function setCurrentDate() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleString();
+        }
+
+        // === LOGIN LOGIC ===
+        async function handleLogin() {
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('admin-page').classList.remove('hidden');
+                await loadDashboard();
+                await loadProducts();
+                await loadSalesRecords();
+            } else {
+                errorMsg.textContent = '❌ Incorrect password. Try again!';
+                errorMsg.classList.remove('hidden');
+                setTimeout(() => errorMsg.classList.add('hidden'), 3000);
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('admin-page').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('password').value = '';
+        }
+
+        // === TAB MANAGEMENT ===
+        async function showTab(tabName, event) {
+            const trigger = event?.currentTarget || event?.target;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
+
+            // Show selected tab
+            $(tabName).classList.add('active');
+            trigger?.classList.add('active');
+
+            // Update title
+            const titles = {
+                'dashboard': '📊 Dashboard',
+                'prices': '💰 Gas Price',
+                'products': '📦 Products',
+                'sales': '📈 Sales Records',
+                'settings': '⚙️ Settings'
+            };
+            $('page-title').textContent = titles[tabName] || 'Dashboard';
+
+            // Reload data for the active tab
+            if (tabName === 'sales') await loadSalesRecords();
+            else if (tabName === 'products') await loadProducts();
+            else if (tabName === 'dashboard') await loadDashboard();
+        }
+
+        // === GAS PRICE MANAGEMENT ===
+        async function updateGasPrice() {
+            const newPrice = parseNumber($('admin-price').value);
+            if (newPrice < 100) {
+                alert('Please enter a valid price (minimum ₦100)');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('gas_prices')
+                    .update({ price_per_kg: newPrice, updated_by: 'admin' })
+                    .eq('id', 1);
+
+                if (error) throw error;
+
+                $('display-dashboard-price').textContent = formatCurrency(newPrice);
+                alert('✅ Gas price updated to ' + formatCurrency(newPrice));
+                $('admin-price').value = '';
+                await loadDashboard();
+            } catch (error) {
+                alert('❌ Error updating price: ' + error.message);
+            }
+        }
+
+        // === PRODUCT MANAGEMENT ===
+        async function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const price = document.getElementById('product-price').value;
+            const image = document.getElementById('product-image').value;
+
+            if (!name || !price || !image) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('products')
+                    .insert([{
+                        name: name,
+                        price: parseInt(price),
+                        image_url: image
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                document.getElementById('product-image').value = '';
+
+                alert('✅ Product added successfully!');
+                await loadProducts();
+            } catch (error) {
+                alert('❌ Error adding product: ' + error.message);
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    const { error } = await supabase
+                        .from('products')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    
+                    alert('✅ Product deleted!');
+                    await loadProducts();
+                } catch (error) {
+                    alert('❌ Error deleting product: ' + error.message);
+                }
+            }
+        }
+
+        async function editProduct(id) {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                const newPrice = prompt('Enter new price:', data.price);
+                if (newPrice) {
+                    const { error: updateError } = await supabase
+                        .from('products')
+                        .update({ price: parseInt(newPrice) })
+                        .eq('id', id);
+
+                    if (updateError) throw updateError;
+                    
+                    alert('✅ Product updated!');
+                    await loadProducts();
+                }
+            } catch (error) {
+                alert('❌ Error editing product: ' + error.message);
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const grid = $('products-grid');
+                
+                if (!data || data.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray); padding: 30px;">No products added yet</p>';
+                    $('total-products').textContent = '0';
+                    return;
+                }
+
+                grid.innerHTML = data.map(p => `
+                    <div class="product-item">
+                        <div class="product-image-box">
+                            <img src="${p.image_url}" onerror="this.src='images/placeholder.png'" alt="${p.name}">
+                        </div>
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-price">₦${parseInt(p.price).toLocaleString()}</div>
+                        <div class="product-actions">
+                            <button class="btn-secondary" onclick="editProduct(${p.id})" style="flex: 1;">✏️ Edit</button>
+                            <button class="btn-danger" onclick="deleteProduct(${p.id})" style="flex: 1;">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('total-products').textContent = data.length;
+            } catch (error) {
+                console.error('Error loading products:', error);
+                alert('❌ Error loading products: ' + error.message);
+            }
+        }
+
+        // === SALES MANAGEMENT ===
+        async function recordSale() {
+            const date = document.getElementById('sale-date').value;
+            const type = document.getElementById('sale-type-input').value;
+            const amount = document.getElementById('sale-amount').value;
+            const details = document.getElementById('sale-details').value;
+
+            if (!date || !amount || !details) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('sales')
+                    .insert([{
+                        sale_date: date,
+                        sale_type: type,
+                        amount: parseInt(amount),
+                        details: details
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById('sale-date').valueAsDate = new Date();
+                document.getElementById('sale-amount').value = '';
+                document.getElementById('sale-details').value = '';
+
+                alert('✅ Sale recorded successfully!');
+                await loadSalesRecords();
+                await loadDashboard();
+            } catch (error) {
+                alert('❌ Error recording sale: ' + error.message);
+            }
+        }
+
+        async function deleteSale(id) {
+            if (confirm('Delete this sale record?')) {
+                try {
+                    const { error } = await supabase
+                        .from('sales')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    
+                    alert('✅ Sale deleted!');
+                    await loadSalesRecords();
+                    await loadDashboard();
+                } catch (error) {
+                    alert('❌ Error deleting sale: ' + error.message);
+                }
+            }
+        }
+
+        async function loadSalesRecords() {
+            try {
+                const { data, error } = await supabase
+                    .from('sales')
+                    .select('*')
+                    .order('sale_date', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('sales-table-body');
+                const recentBody = document.getElementById('recent-sales-body');
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray);">No sales recorded yet</td></tr>';
+                    recentBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--gray);">No sales recorded yet</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(s => `
+                    <tr>
+                        <td>${new Date(s.sale_date).toLocaleDateString()}</td>
+                        <td><span class="status-badge ${s.sale_type === 'delivery' ? 'status-success' : 'status-pending'}">${s.sale_type === 'delivery' ? '🚚 Delivery' : '📦 Product'}</span></td>
+                        <td>${formatCurrency(s.amount)}</td>
+                        <td>${s.details.substring(0, 30)}...</td>
+                        <td><button class="btn-danger" onclick="deleteSale(${s.id})" style="padding: 5px 10px; font-size: 0.8rem;">Delete</button></td>
+                    </tr>
+                `).join('');
+
+                recentBody.innerHTML = data.slice(0, 5).map(s => `
+                    <tr>
+                        <td>${new Date(s.sale_date).toLocaleDateString()}</td>
+                        <td>${s.sale_type === 'delivery' ? '🚚 Delivery' : '📦 Product'}</td>
+                        <td>₦${parseInt(s.amount).toLocaleString()}</td>
+                        <td>${s.details.substring(0, 25)}...</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading sales:', error);
+                alert('❌ Error loading sales: ' + error.message);
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                // Get gas price
+                const { data: priceData, error: priceError } = await supabase
+                    .from('gas_prices')
+                    .select('price_per_kg')
+                    .eq('id', 1)
+                    .single();
+
+                if (priceError) throw priceError;
+
+                const gasPrice = priceData?.price_per_kg || 950;
+
+                // Get sales
+                const { data: salesData, error: salesError } = await supabase
+                    .from('sales')
+                    .select('*');
+
+                if (salesError) throw salesError;
+
+                let totalSales = 0;
+                let deliveries = 0;
+
+                (salesData || []).forEach(s => {
+                    totalSales += parseInt(s.amount);
+                    if (s.sale_type === 'delivery') deliveries++;
+                });
+
+                $('display-dashboard-price').textContent = formatCurrency(gasPrice);
+                $('total-sales').textContent = totalSales.toLocaleString();
+                $('total-deliveries').textContent = deliveries;
+
+                const adminPriceInput = $('admin-price');
+                if (adminPriceInput) adminPriceInput.value = gasPrice;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // === SETTINGS ===
+        function updatePassword() {
+            const newPassword = document.getElementById('new-password').value;
+            if (!newPassword || newPassword.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            alert('⚠️ Password management is handled in Supabase authentication. For production, use Supabase Auth.');
+        }
+
+        async function clearAllData() {
+            if (!confirm('⚠️ This will delete ALL sales records! This cannot be undone. Are you sure?')) {
+                return;
+            }
+            if (!confirm('Really sure? This is permanent!')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('sales')
+                    .delete()
+                    .neq('id', 0); // Delete all
+
+                if (error) throw error;
+
+                alert('✅ All data cleared!');
+                await loadSalesRecords();
+                await loadDashboard();
+            } catch (error) {
+                alert('❌ Error clearing data: ' + error.message);
+            }
+        }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Calculator illustration">
+  <rect x="24" y="24" width="432" height="312" rx="40" fill="#15213a"/>
+  <rect x="80" y="72" width="320" height="176" rx="24" fill="#0f172d"/>
+  <circle cx="120" cy="250" r="22" fill="#ff7f1c"/>
+  <circle cx="180" cy="250" r="22" fill="#ffb65d"/>
+  <circle cx="240" cy="250" r="22" fill="#ffffff" opacity="0.8"/>
+  <circle cx="300" cy="250" r="22" fill="#5d8cff"/>
+  <circle cx="360" cy="250" r="22" fill="#9a5aff"/>
+</svg>

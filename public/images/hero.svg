@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Hero illustration">
+  <defs>
+    <linearGradient id="heroGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff7f10"/>
+      <stop offset="1" stop-color="#ffbb70"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="36" fill="#122039"/>
+  <circle cx="240" cy="180" r="120" fill="url(#heroGrad)" opacity="0.9"/>
+  <path d="M190 140h100v120h-100z" fill="#0d1526"/>
+  <path d="M200 160h80v20h-80z" fill="#fff" opacity="0.9"/>
+</svg>
