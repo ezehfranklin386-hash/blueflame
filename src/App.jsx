@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 
 const WHATSAPP_NUMBER = '2348106606098';
 const DEFAULT_PRICE = 950;
@@ -27,12 +27,16 @@ const productItems = [
   }
 ];
 
-const formatCurrency = value => `₦${Number(value).toLocaleString()}`;
+const formatCurrency = value => `₦${Number(value || 0).toLocaleString()}`;
 
 const App = () => {
   const [pricePerKg, setPricePerKg] = useState(DEFAULT_PRICE);
   const [customerAmount, setCustomerAmount] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [contactBudget, setContactBudget] = useState('');
+  const [contactAddress, setContactAddress] = useState('');
 
   const totalKg = useMemo(() => {
     const amount = Number(customerAmount) || 0;
@@ -44,7 +48,7 @@ const App = () => {
   };
 
   const handleOrderClick = product => {
-    const msg = `Hello Blue Flame Gas! 🔥%0AI want to order:%0A- Product: ${product.name}%0A- Quantity: 1%0A- Price: ${formatCurrency(product.price)}%0A%0APlease confirm availability.`;
+    const msg = `Hello Blue Flame Gas! 🔥\nI want to order:\n- Product: ${product.name}\n- Quantity: 1\n- Price: ${formatCurrency(product.price)}\n\nPlease confirm availability.`;
     sendWhatsAppMessage(msg);
   };
 
@@ -55,8 +59,26 @@ const App = () => {
       return;
     }
 
-    const msg = `Delivery Calculation 🔥%0A- Amount: ${formatCurrency(amount)}%0A- Gas Price: ${formatCurrency(pricePerKg)}/KG%0A- Quantity: ${totalKg.toFixed(2)} KG%0A%0APlease confirm this delivery.`;
+    const msg = `Delivery Calculation 🔥\n- Amount: ${formatCurrency(amount)}\n- Gas Price: ${formatCurrency(pricePerKg)}/KG\n- Quantity: ${totalKg.toFixed(2)} KG\n\nPlease confirm this delivery.`;
     sendWhatsAppMessage(msg);
+  };
+
+  const handleContactSubmit = event => {
+    event.preventDefault();
+
+    if (!contactName || !contactPhone || !contactBudget || !contactAddress) {
+      alert('Please complete all contact fields before sending.');
+      return;
+    }
+
+    const msg = `New Order Request! 🚚\nName: ${contactName}\nPhone: ${contactPhone}\nBudget: ${formatCurrency(contactBudget)}\nAddress: ${contactAddress}\n\nPlease contact this customer to confirm their order.`;
+
+    sendWhatsAppMessage(msg);
+    setContactName('');
+    setContactPhone('');
+    setContactBudget('');
+    setContactAddress('');
+    alert('Thank you! Your order request has been sent via WhatsApp.');
   };
 
   return (
@@ -70,7 +92,12 @@ const App = () => {
               <span>Trusted Gas Supply</span>
             </div>
           </div>
-          <button className="nav-toggle" onClick={() => setIsMenuOpen(open => !open)} aria-label="Toggle navigation">
+          <button
+            className="nav-toggle"
+            onClick={() => setIsMenuOpen(open => !open)}
+            aria-label="Toggle navigation"
+            aria-expanded={isMenuOpen}
+          >
             <span />
             <span />
             <span />
@@ -95,7 +122,7 @@ const App = () => {
             <p>Blue Flame keeps your kitchen burning with dependable gas supply, live pricing, and local delivery across town.</p>
             <div className="hero-actions">
               <button onClick={() => sendWhatsAppMessage('Hello Blue Flame Gas! I want to place an order.')}>Order via WhatsApp</button>
-              <a href="#calculator" className="secondary-btn">Delivery Calculator</a>
+              <button className="secondary-btn" onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}>Delivery Calculator</button>
             </div>
           </div>
           <div className="hero-visual">
@@ -115,6 +142,31 @@ const App = () => {
           <div className="stat-card">
             <strong>30 mins</strong>
             <span>Average Delivery</span>
+          </div>
+        </section>
+
+        <section className="features" id="features">
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">⚡</div>
+              <h3>Fast Delivery</h3>
+              <p>Same-day delivery available across Lagos metropolis.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🛡️</div>
+              <h3>Safe & Certified</h3>
+              <p>DPR certified gas with safety-checked cylinders.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">💰</div>
+              <h3>Best Prices</h3>
+              <p>Competitive pricing with no hidden charges.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">📍</div>
+              <h3>Wide Coverage</h3>
+              <p>Serving Ibeju-Lekki, Ajah, Victoria Island & more.</p>
+            </div>
           </div>
         </section>
 
@@ -231,7 +283,7 @@ const App = () => {
             <div>
               <h3>Contact support</h3>
               <p>Phone and WhatsApp support is available around the clock.</p>
-              <a className="contact-link" href={`https://wa.me/${WHATSAPP_NUMBER}`}>Chat on WhatsApp</a>
+              <button className="contact-link" onClick={() => sendWhatsAppMessage('Hello Blue Flame Gas! I would like to make an order.')}>Chat on WhatsApp</button>
             </div>
             <div className="support-stats">
               <div>
@@ -242,6 +294,59 @@ const App = () => {
                 <strong>5K+</strong>
                 <span>Happy customers</span>
               </div>
+            </div>
+          </div>
+
+          <div className="contact-card" style={{ marginTop: '2rem' }}>
+            <div>
+              <h3>Request a Delivery</h3>
+              <form onSubmit={handleContactSubmit}>
+                <div className="form-group">
+                  <label htmlFor="name">Full Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Your name"
+                    value={contactName}
+                    onChange={e => setContactName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Phone Number</label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="08012345678"
+                    value={contactPhone}
+                    onChange={e => setContactPhone(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="amount">Amount (₦)</label>
+                  <input
+                    id="amount"
+                    type="number"
+                    placeholder="e.g., 5000"
+                    min="1300"
+                    value={contactBudget}
+                    onChange={e => setContactBudget(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="address">Delivery Address</label>
+                  <textarea
+                    id="address"
+                    placeholder="Your full delivery address"
+                    value={contactAddress}
+                    onChange={e => setContactAddress(e.target.value)}
+                    required
+                  />
+                </div>
+                <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>Submit Order</button>
+              </form>
             </div>
           </div>
         </section>
