@@ -29,17 +29,19 @@ function Navigation() {
           <a href="#services">Services</a>
           <a href="#contact" className="nav-cta">Order Now</a>
         </div>
-        <button 
+        <button
+          type="button"
           className={`mobile-menu-btn ${mobileMenuOpen ? 'open' : ''}`}
           aria-label="Toggle mobile menu"
           aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           <span className="menu-icon"></span>
         </button>
       </div>
       {mobileMenuOpen && (
-        <div className="mobile-menu active">
+        <div id="mobile-menu" className="mobile-menu active">
           <ul>
             <li><a href="#products" onClick={closeMobileMenu}>Products</a></li>
             <li><a href="#about" onClick={closeMobileMenu}>About</a></li>

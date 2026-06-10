@@ -52,6 +52,8 @@ This guide walks you through setting up Blue Flame Gas locally and deploying to 
 1. Go to **https://supabase.com**
 2. Click **3: ADD CREDENTIALS TO `.env.local` (5 minutes)
 
+
+
 ### Step 3.1: Fill Your Environment Variables
 
 1. Go back to your `.env.local` file

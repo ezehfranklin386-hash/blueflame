@@ -1,13 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { CONTACT_CONFIG } from '../config';
+import { validateForm } from '../utils/formValidation';
+import FormField from './FormField';
+import ContactItem from './ContactItem';
+
+const initialFormData = { name: '', phone: '', amount: '', address: '' };
+const initialErrors = { name: '', phone: '', amount: '', address: '' };
+const initialStatus = { type: '', message: '' };
 
 function Contact() {
-  const WHATSAPP_NUMBER = '2348106606098';
-  const [formData, setFormData] = useState({ name: '', phone: '', amount: '', address: '' });
+  const {
+    whatsappNumber,
+    pricePerKg,
+    minOrderAmount,
+    phone,
+    email,
+    addressLines,
+    hours
+  } = CONTACT_CONFIG;
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState(initialErrors);
+  const [status, setStatus] = useState(initialStatus);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting) {
           setIsVisible(true);
         }
@@ -23,21 +42,93 @@ function Contact() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    setErrors({ ...errors, [e.target.id]: '' });
+    setStatus(initialStatus);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const msg = `New Order Request! 🚚
-Name: ${formData.name}
-Phone: ${formData.phone}
-Budget: ₦${formData.amount}
-Address: ${formData.address}
+  const getWeightForPrice = (price) => {
+    const amount = Number(price);
+    if (!price || Number.isNaN(amount) || amount <= 0) return 0;
+    return amount / pricePerKg;
+  };
+
+  const validateForm = (data) => {
+    const nextErrors = {};
+
+    if (!data.name.trim()) {
+      nextErrors.name = 'Please enter your full name.';
+    }
+
+    if (!phoneRegex.test(data.phone.trim())) {
+      nextErrors.phone = 'Enter a valid Nigerian phone number, e.g. 08101234567 or 2348101234567.';
+    }
+
+    const amountValue = Number(data.amount);
+    if (!data.amount || Number.isNaN(amountValue) || amountValue < minOrderAmount) {
+      nextErrors.amount = `Amount must be at least ₦${minOrderAmount.toLocaleString()}.`;
+    }
+
+    if (!data.address.trim()) {
+      nextErrors.address = 'Please enter your delivery address.';
+    }
+
+    return {
+      isValid: Object.keys(nextErrors).length === 0,
+      errors: nextErrors
+    };
+  };
+
+  const buildOrderMessage = (data) =>
+    `New Order Request! 🚚
+Name: ${data.name}
+Phone: ${data.phone}
+Budget: ₦${data.amount}
+Approx. Weight: ${getWeightForPrice(data.amount).toFixed(2)} kg
+Address: ${data.address}
 
 Please contact this customer to confirm their order.`;
 
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-    setFormData({ name: '', phone: '', amount: '', address: '' });
-    alert('Thank you! Your order request has been sent via WhatsApp.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus(initialStatus);
+
+    const { isValid, errors: validationErrors } = validateForm(formData);
+    if (!isValid) {
+      setErrors(validationErrors);
+      setStatus({ type: 'error', message: 'Please fix the highlighted fields before submitting.' });
+      return;
+    }
+
+    const message = buildOrderMessage(formData);
+    const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+    const opened = window.open(waUrl, '_blank');
+    if (opened) {
+      setStatus({ type: 'success', message: 'WhatsApp opened successfully. Your order message is ready to send.' });
+      setFormData(initialFormData);
+      setErrors(initialErrors);
+      return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(message);
+        setStatus({
+          type: 'success',
+          message: 'WhatsApp could not open automatically. The order details have been copied to your clipboard.'
+        });
+        setFormData(initialFormData);
+        setErrors(initialErrors);
+        return;
+      } catch (copyError) {
+        // Fallback below if clipboard write fails
+      }
+    }
+
+    setStatus({
+      type: 'error',
+      message: 'Unable to open WhatsApp or copy the message. Please try again or contact us directly.'
+    });
   };
 
   return (
@@ -47,41 +138,113 @@ Please contact this customer to confirm their order.`;
           <h3>Get In Touch</h3>
           <div className="contact-item">
             <span className="contact-item-icon">📞</span>
-            <div><strong>Phone:</strong><br />08106606098</div>
+            <div>
+              <strong>Phone:</strong>
+              <br />
+              {phone}
+            </div>
           </div>
           <div className="contact-item">
             <span className="contact-item-icon">📍</span>
-            <div><strong>Address:</strong><br />Blue Flame Gas Depot<br />Uba Pharmacy Road, Awoyaya<br />Ibeju-Lekki, Lagos State</div>
+            <div>
+              <strong>Address:</strong>
+              <br />
+              {addressLines.map((line, index) => (
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </div>
           </div>
           <div className="contact-item">
             <span className="contact-item-icon">⏰</span>
-            <div><strong>Hours:</strong><br />Mon-Sat: 7AM-9PM<br />Sunday: 9AM-6PM</div>
+            <div>
+              <strong>Hours:</strong>
+              <br />
+              {hours.map((entry, index) => (
+                <span key={index}>
+                  {entry}
+                  <br />
+                </span>
+              ))}
+            </div>
           </div>
           <div className="contact-item">
             <span className="contact-item-icon">✉️</span>
-            <div><strong>Email:</strong><br />blueflamesgassupply@gmail.com</div>
+            <div>
+              <strong>Email:</strong>
+              <br />
+              {email}
+            </div>
           </div>
         </div>
         <div className="contact-form">
           <h3>Request a Delivery</h3>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label htmlFor="name">Full Name</label>
-              <input type="text" id="name" placeholder="Your name" value={formData.name} onChange={handleChange} required />
+              <input
+                type="text"
+                id="name"
+                placeholder="Your name"
+                value={formData.name}
+                onChange={handleChange}
+                aria-describedby="name-error"
+                aria-invalid={!!errors.name}
+                required
+              />
+              <span className="field-error" id="name-error" aria-live="assertive">{errors.name}</span>
             </div>
             <div className="form-group">
               <label htmlFor="phone">Phone Number</label>
-              <input type="tel" id="phone" placeholder="08012345678" value={formData.phone} onChange={handleChange} required />
+              <input
+                type="tel"
+                id="phone"
+                placeholder="08012345678"
+                value={formData.phone}
+                onChange={handleChange}
+                aria-describedby="phone-error"
+                aria-invalid={!!errors.phone}
+                required
+              />
+              <span className="field-error" id="phone-error" aria-live="assertive">{errors.phone}</span>
             </div>
             <div className="form-group">
               <label htmlFor="amount">Amount (₦)</label>
-              <input type="number" id="amount" placeholder="e.g., 5000" min="1300" value={formData.amount} onChange={handleChange} required />
+              <input
+                type="number"
+                id="amount"
+                placeholder="e.g., 5000"
+                min={minOrderAmount}
+                value={formData.amount}
+                onChange={handleChange}
+                aria-describedby="amount-error"
+                aria-invalid={!!errors.amount}
+                required
+              />
+              <span className="field-error" id="amount-error" aria-live="assertive">{errors.amount}</span>
+              <div className="price-calculator-result">
+                ≈ {getWeightForPrice(formData.amount).toFixed(2)} kg (₦{pricePerKg.toLocaleString()} = 1kg)
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="address">Delivery Address</label>
-              <textarea id="address" placeholder="Your full delivery address" value={formData.address} onChange={handleChange} required></textarea>
+              <textarea
+                id="address"
+                placeholder="Your full delivery address"
+                value={formData.address}
+                onChange={handleChange}
+                aria-describedby="address-error"
+                aria-invalid={!!errors.address}
+                required
+              ></textarea>
+              <span className="field-error" id="address-error" aria-live="assertive">{errors.address}</span>
             </div>
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Submit Order</button>
+            {status.message && (
+              <div className={`form-status ${status.type}`} role="status" aria-live="polite" aria-atomic="true">{status.message}</div>
+            )}
+            <button type="submit" className="btn btn-primary full-width">Submit Order</button>
           </form>
         </div>
       </div>
