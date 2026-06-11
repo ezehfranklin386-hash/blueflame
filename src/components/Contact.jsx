@@ -52,32 +52,6 @@ function Contact() {
     return amount / pricePerKg;
   };
 
-  const validateForm = (data) => {
-    const nextErrors = {};
-
-    if (!data.name.trim()) {
-      nextErrors.name = 'Please enter your full name.';
-    }
-
-    if (!phoneRegex.test(data.phone.trim())) {
-      nextErrors.phone = 'Enter a valid Nigerian phone number, e.g. 08101234567 or 2348101234567.';
-    }
-
-    const amountValue = Number(data.amount);
-    if (!data.amount || Number.isNaN(amountValue) || amountValue < minOrderAmount) {
-      nextErrors.amount = `Amount must be at least ₦${minOrderAmount.toLocaleString()}.`;
-    }
-
-    if (!data.address.trim()) {
-      nextErrors.address = 'Please enter your delivery address.';
-    }
-
-    return {
-      isValid: Object.keys(nextErrors).length === 0,
-      errors: nextErrors
-    };
-  };
-
   const buildOrderMessage = (data) =>
     `New Order Request! 🚚
 Name: ${data.name}

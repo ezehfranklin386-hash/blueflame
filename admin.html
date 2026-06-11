@@ -694,11 +694,11 @@
     <script>
         // ===== SUPABASE CONFIGURATION =====
         // 🚨 ADD YOUR SUPABASE CREDENTIALS HERE
-        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co'; // Replace with your URL
-        const SUPABASE_KEY = 'YOUR_ANON_KEY'; // Replace with your Anon Key
+        const SUPABASE_URL = 'https://eoqvfmmrbgbonbpgibsq.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvcXZmbW1yYmdib25icGdpYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzcxNzcsImV4cCI6MjA5NTAxMzE3N30.QuLcy9EF_FZDF0JNoAxEniifxPnPLW41_x4M8C20PCw';
         
         let supabase;
-        const ADMIN_PASSWORD = 'blueflame2024';
+        const ADMIN_PASSWORD = localStorage.getItem('adminPassword') || 'blueflame2024';
 
         const $ = id => document.getElementById(id);
         const formatCurrency = value => `₦${Number(value).toLocaleString()}`;
@@ -719,7 +719,10 @@
             
             // Check if logged in
             const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-            if (isLoggedIn) {
+            const loginTime = parseInt(localStorage.getItem('adminLoginTime') || '0', 10);
+            const SESSION_DURATION = 30 * 60 * 1000; // 30 minutes
+            const sessionExpired = (Date.now() - loginTime) > SESSION_DURATION;
+            if (isLoggedIn && !sessionExpired) {
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('admin-page').classList.remove('hidden');
                 await loadDashboard();
@@ -743,6 +746,7 @@
 
             if (password === ADMIN_PASSWORD) {
                 localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminLoginTime', Date.now().toString());
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('admin-page').classList.remove('hidden');
                 await loadDashboard();
@@ -757,6 +761,7 @@
 
         function handleLogout() {
             localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminLoginTime');
             document.getElementById('admin-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('password').value = '';
@@ -914,7 +919,7 @@
                 grid.innerHTML = data.map(p => `
                     <div class="product-item">
                         <div class="product-image-box">
-                            <img src="${p.image_url}" onerror="this.src='images/placeholder.png'" alt="${p.name}">
+                            <img src="${p.image_url}" onerror="this.style.display='none'" alt="${p.name}">
                         </div>
                         <div class="product-name">${p.name}</div>
                         <div class="product-price">₦${parseInt(p.price).toLocaleString()}</div>
@@ -1075,14 +1080,15 @@
                 alert('Password must be at least 6 characters long');
                 return;
             }
-            alert('⚠️ Password management is handled in Supabase authentication. For production, use Supabase Auth.');
+            localStorage.setItem('adminPassword', newPassword);
+            alert('✅ Password updated! It will persist on this browser.');
+            document.getElementById('new-password').value = '';
         }
 
         async function clearAllData() {
-            if (!confirm('⚠️ This will delete ALL sales records! This cannot be undone. Are you sure?')) {
-                return;
-            }
-            if (!confirm('Really sure? This is permanent!')) {
+            const confirmation = prompt('⚠️ Type "DELETE" to confirm clearing ALL sales records. This cannot be undone!');
+            if (confirmation !== 'DELETE') {
+                alert('Cancelled. You must type "DELETE" to confirm.');
                 return;
             }
 
