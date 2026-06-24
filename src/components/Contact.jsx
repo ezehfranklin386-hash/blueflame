@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CONTACT_CONFIG } from '../config';
+import { supabase } from '../supabase';
 import { validateForm } from '../utils/formValidation';
 import FormField from './FormField';
 import ContactItem from './ContactItem';
@@ -24,6 +25,18 @@ function Contact() {
   const [errors, setErrors] = useState(initialErrors);
   const [status, setStatus] = useState(initialStatus);
   const [isVisible, setIsVisible] = useState(false);
+  const [livePricePerKg, setLivePricePerKg] = useState(null);
+
+  useEffect(() => {
+    supabase
+      .from('gas_prices')
+      .select('price_per_kg')
+      .single()
+      .then(({ data }) => {
+        if (data?.price_per_kg) setLivePricePerKg(data.price_per_kg);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,10 +60,12 @@ function Contact() {
     setStatus(initialStatus);
   };
 
+  const effectivePricePerKg = livePricePerKg || pricePerKg;
+
   const getWeightForPrice = (price) => {
     const amount = Number(price);
     if (!price || Number.isNaN(amount) || amount <= 0) return 0;
-    return amount / pricePerKg;
+    return amount / effectivePricePerKg;
   };
 
   const buildOrderMessage = (data) =>
@@ -200,7 +215,7 @@ Please contact this customer to confirm their order.`;
               />
               <span className="field-error" id="amount-error" aria-live="assertive">{errors.amount}</span>
               <div className="price-calculator-result">
-                ≈ {getWeightForPrice(formData.amount).toFixed(2)} kg (₦{pricePerKg.toLocaleString()} = 1kg)
+                ≈ {getWeightForPrice(formData.amount).toFixed(2)} kg (₦{effectivePricePerKg.toLocaleString()} = 1kg)
               </div>
             </div>
             <div className="form-group">
