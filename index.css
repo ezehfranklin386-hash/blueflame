@@ -417,8 +417,8 @@ footer { background: var(--secondary); color: #B0C4DE; padding: clamp(40px, 8vw,
 /* === PROMO BANNER === */
 .promo-banner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  max-width: 1200px;
+  grid-template-columns: 1.4fr 1fr;
+  max-width: 1400px;
   margin: var(--space-xl) auto;
   border-radius: var(--card-radius);
   overflow: hidden;
