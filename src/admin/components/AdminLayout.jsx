@@ -1,11 +1,12 @@
 import React from 'react';
+import { BarChart3, DollarSign, Package, TrendingUp, Settings } from 'lucide-react';
 
 const TABS = [
-  { key: 'dashboard', label: 'Dashboard', icon: '\uD83D\uDCCA' },
-  { key: 'prices', label: 'Gas Price', icon: '\uD83D\uDCB0' },
-  { key: 'products', label: 'Products', icon: '\uD83D\uDCE6' },
-  { key: 'sales', label: 'Sales Records', icon: '\uD83D\uDCC8' },
-  { key: 'settings', label: 'Settings', icon: '\u2699\uFE0F' },
+  { key: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+  { key: 'prices', label: 'Gas Price', icon: DollarSign },
+  { key: 'products', label: 'Products', icon: Package },
+  { key: 'sales', label: 'Sales Records', icon: TrendingUp },
+  { key: 'settings', label: 'Settings', icon: Settings },
 ];
 
 function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
@@ -33,7 +34,7 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
                 className={`tab-link ${activeTab === tab.key ? 'active' : ''}`}
                 onClick={() => onTabChange(tab.key)}
               >
-                {tab.icon} {tab.label}
+                <tab.icon size={18} /> {tab.label}
               </button>
             </li>
           ))}
@@ -60,7 +61,7 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
                 className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
                 onClick={() => onTabChange(tab.key)}
               >
-                {tab.icon} {tab.label}
+                <tab.icon size={18} /> {tab.label}
               </button>
             ))}
           </div>

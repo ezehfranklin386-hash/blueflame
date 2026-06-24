@@ -1,4 +1,5 @@
 import React from 'react';
+import { MessageCircle } from 'lucide-react';
 
 function WhatsAppButton() {
   return (
@@ -9,7 +10,7 @@ function WhatsAppButton() {
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
     >
-      💬
+      <MessageCircle size={28} color="white" />
     </a>
   );
 }

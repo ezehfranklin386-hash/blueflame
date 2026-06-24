@@ -1,4 +1,5 @@
  import React, { useState, useEffect } from 'react';
+import { Smartphone } from 'lucide-react';
 
 function Products() {
   const WHATSAPP_NUMBER = '2348106606098';
@@ -87,7 +88,7 @@ Please confirm availability. Thank you!`;
                 <button className="qty-btn plus" onClick={() => updateQuantity(product.id, 1)}>+</button>
               </div>
               <button className="btn btn-primary whatsapp-order" onClick={() => handleWhatsAppOrder(product)} style={{ width: '100%' }}>
-                📱 Order on WhatsApp
+                <Smartphone size={18} style={{verticalAlign: 'middle'}} /> Order on WhatsApp
               </button>
             </div>
           </div>

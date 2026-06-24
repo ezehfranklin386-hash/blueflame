@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Zap, Shield, DollarSign, MapPin } from 'lucide-react';
 
 function Features() {
   const features = [
-    { icon: '⚡', title: 'Fast Delivery', desc: 'Same-day delivery available across Lagos metropolis' },
-    { icon: '🛡️', title: 'Safe & Certified', desc: 'DPR certified gas with safety-checked cylinders' },
-    { icon: '💰', title: 'Best Prices', desc: 'Competitive pricing with no hidden charges' },
-    { icon: '📍', title: 'Wide Coverage', desc: 'Serving Ibeju-Lekki, Ajah, Victoria Island & more' }
+    { icon: Zap, title: 'Fast Delivery', desc: 'Same-day delivery available across Lagos metropolis' },
+    { icon: Shield, title: 'Safe & Certified', desc: 'DPR certified gas with safety-checked cylinders' },
+    { icon: DollarSign, title: 'Best Prices', desc: 'Competitive pricing with no hidden charges' },
+    { icon: MapPin, title: 'Wide Coverage', desc: 'Serving Ibeju-Lekki, Ajah, Victoria Island & more' }
   ];
 
   const [visibleCards, setVisibleCards] = useState(new Set());
@@ -33,7 +34,7 @@ function Features() {
       <div className="features-grid">
         {features.map((feature, idx) => (
           <div key={idx} id={`feature-${idx}`} className={`feature-card animate-on-scroll ${visibleCards.has(`feature-${idx}`) ? 'visible' : ''}`}>
-            <div className="feature-icon">{feature.icon}</div>
+            <div className="feature-icon"><feature.icon size={48} /></div>
             <h3>{feature.title}</h3>
             <p>{feature.desc}</p>
           </div>

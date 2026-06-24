@@ -3,6 +3,7 @@ import { CONTACT_CONFIG } from '../config';
 import { validateForm } from '../utils/formValidation';
 import FormField from './FormField';
 import ContactItem from './ContactItem';
+import { Phone, MapPin, Clock, Mail } from 'lucide-react';
 
 const initialFormData = { name: '', phone: '', amount: '', address: '' };
 const initialErrors = { name: '', phone: '', amount: '', address: '' };
@@ -111,7 +112,7 @@ Please contact this customer to confirm their order.`;
         <div className="contact-info">
           <h3>Get In Touch</h3>
           <div className="contact-item">
-            <span className="contact-item-icon">📞</span>
+            <span className="contact-item-icon"><Phone size={20} /></span>
             <div>
               <strong>Phone:</strong>
               <br />
@@ -119,7 +120,7 @@ Please contact this customer to confirm their order.`;
             </div>
           </div>
           <div className="contact-item">
-            <span className="contact-item-icon">📍</span>
+            <span className="contact-item-icon"><MapPin size={20} /></span>
             <div>
               <strong>Address:</strong>
               <br />
@@ -132,7 +133,7 @@ Please contact this customer to confirm their order.`;
             </div>
           </div>
           <div className="contact-item">
-            <span className="contact-item-icon">⏰</span>
+            <span className="contact-item-icon"><Clock size={20} /></span>
             <div>
               <strong>Hours:</strong>
               <br />
@@ -145,7 +146,7 @@ Please contact this customer to confirm their order.`;
             </div>
           </div>
           <div className="contact-item">
-            <span className="contact-item-icon">✉️</span>
+            <span className="contact-item-icon"><Mail size={20} /></span>
             <div>
               <strong>Email:</strong>
               <br />

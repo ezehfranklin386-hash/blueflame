@@ -1,0 +1,8 @@
+[33m[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - rolldown:vite-resolve (51%)
+  - vite:css-post (19%)
+  - vite:css (15%)
+  - vite:prepare-out-dir (6%)
+  - vite:build-html (5%)
+See https://rolldown.rs/options/checks#plugintimings for more details.
+[39m

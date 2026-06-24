@@ -1,4 +1,5 @@
 import React from 'react';
+import { Phone, MapPin } from 'lucide-react';
 
 function Footer() {
   return (
@@ -18,8 +19,8 @@ function Footer() {
         </div>
         <div className="footer-section">
           <h4>Contact</h4>
-          <p>📞 08106606098</p>
-          <p>📍 Ibeju-Lekki, Lagos</p>
+          <p><Phone size={14} style={{display: 'inline'}} /> 08106606098</p>
+          <p><MapPin size={14} style={{display: 'inline'}} /> Ibeju-Lekki, Lagos</p>
         </div>
         <div className="footer-section">
           <h4>Follow Us</h4>
