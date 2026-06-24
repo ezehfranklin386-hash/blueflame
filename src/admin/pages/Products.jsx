@@ -11,6 +11,7 @@ function Products() {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageBase64, setImageBase64] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [alert, setAlert] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [failedImages, setFailedImages] = useState(new Set());
@@ -136,6 +137,7 @@ function Products() {
   async function saveEdit() {
     if (!editingProduct || !editPrice) return;
 
+    setSaving(true);
     try {
       const updateData = { price: parseInt(editPrice) };
       if (editImageBase64) {
@@ -157,6 +159,8 @@ function Products() {
       await loadProducts();
     } catch (error) {
       showAlert('danger', 'Error updating product: ' + error.message);
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -332,8 +336,8 @@ function Products() {
               </div>
             </div>
             <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => setEditingProduct(null)}>Cancel</button>
-              <button className="btn-primary" onClick={saveEdit}>Save Changes</button>
+              <button className="btn-secondary" onClick={() => setEditingProduct(null)} disabled={saving}>Cancel</button>
+              <button className="btn-primary" onClick={saveEdit} disabled={saving}>{saving ? 'Saving...' : 'Save Changes'}</button>
             </div>
           </div>
         </div>
