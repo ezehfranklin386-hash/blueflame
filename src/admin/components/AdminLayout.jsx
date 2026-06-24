@@ -23,9 +23,18 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
   return (
     <div className="admin-wrapper">
       <aside className="sidebar">
-        <div className="sidebar-logo">
-          <img src="/logo.png" alt="Logo" />
-          <h3>Blue Flame</h3>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <img src="/logo.png" alt="Logo" />
+            <h3>Blue Flame</h3>
+          </div>
+          <div className="sidebar-user">
+            <div className="sidebar-avatar">A</div>
+            <div className="sidebar-user-info">
+              <p>Admin</p>
+              <span>Super Admin</span>
+            </div>
+          </div>
         </div>
         <ul className="sidebar-menu">
           {TABS.map(tab => (
@@ -39,8 +48,9 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
             </li>
           ))}
         </ul>
-        <div className="sidebar-logout">
+        <div className="sidebar-footer">
           <button className="logout-btn" onClick={onLogout}>Logout</button>
+          <div className="sidebar-version">v1.0.0</div>
         </div>
       </aside>
 
