@@ -56,7 +56,7 @@ function AdminApp() {
       case 'dashboard':
         return <Dashboard key={`dash-${refreshKey}`} />;
       case 'prices':
-        return <GasPrice key={`price-${refreshKey}`} onPriceUpdate={() => setRefreshKey(prev => prev + 1)} />;
+        return <GasPrice onPriceUpdate={() => setRefreshKey(prev => prev + 1)} />;
       case 'products':
         return <Products key={`prod-${refreshKey}`} />;
       case 'sales':

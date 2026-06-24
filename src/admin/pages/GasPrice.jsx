@@ -7,6 +7,7 @@ function GasPrice({ onPriceUpdate }) {
   const [currentPrice, setCurrentPrice] = useState(null);
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [priceRowId, setPriceRowId] = useState(null);
 
   const showAlert = (type, message) => {
     setAlert({ type, message });
@@ -21,14 +22,19 @@ function GasPrice({ onPriceUpdate }) {
     try {
       const { data, error } = await supabase
         .from('gas_prices')
-        .select('price_per_kg')
-        .eq('id', 1)
-        .single();
+        .select('id, price_per_kg')
+        .limit(1)
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      const p = data?.price_per_kg || '';
-      setCurrentPrice(p);
-      setPrice(p);
+      if (error) throw error;
+      if (data) {
+        setPriceRowId(data.id);
+        setCurrentPrice(data.price_per_kg);
+        setPrice(data.price_per_kg);
+      } else {
+        setCurrentPrice(null);
+        setPrice('');
+      }
     } catch (error) {
       console.error('Error loading price:', error);
     } finally {
@@ -44,25 +50,22 @@ function GasPrice({ onPriceUpdate }) {
     }
 
     try {
-      const { data } = await supabase
-        .from('gas_prices')
-        .select('id')
-        .eq('id', 1)
-        .maybeSingle();
-
-      if (data) {
+      if (priceRowId) {
         const { error } = await supabase
           .from('gas_prices')
           .update({ price_per_kg: newPrice, updated_by: 'admin' })
-          .eq('id', 1);
+          .eq('id', priceRowId);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('gas_prices')
-          .insert({ price_per_kg: newPrice, updated_by: 'admin' });
+          .insert({ price_per_kg: newPrice, updated_by: 'admin' })
+          .select('id')
+          .single();
 
         if (error) throw error;
+        setPriceRowId(data.id);
       }
 
       showAlert('success', `Gas price updated to \u20A6${newPrice.toLocaleString()}`);
