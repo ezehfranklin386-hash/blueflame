@@ -1,25 +1,47 @@
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Smartphone } from 'lucide-react';
+import { supabase } from '../supabase';
+
+const DEFAULT_PRODUCTS = [
+  { id: 'qty-3kg', name: '3kg Gas Cylinder', price: 20500, badge: 'Lightweight', hot: false, image: 'images/cylinder-3kg.png' },
+  { id: 'qty-5kg', name: '5kg Gas Cylinder', price: 25500, badge: 'Popular', hot: true, image: 'images/cylinder-5kg.png' },
+  { id: 'qty-6kg', name: '6kg Gas Cylinder', price: 28000, badge: null, hot: false, image: 'images/cylinder-6kg.png' },
+  { id: 'qty-11kg', name: '11kg Gas Cylinder', price: 40500, badge: 'Commercial', hot: false, image: 'images/cylinder-11kg.png' },
+  { id: 'qty-12kg', name: '12.5kg Gas Cylinder', price: 50000, badge: 'Best Value', hot: true, image: 'images/cylinder-12.5kg.png' }
+];
 
 function Products() {
   const WHATSAPP_NUMBER = '2348106606098';
-
-  const products = [
-    { id: 'qty-3kg', name: '3kg Gas Cylinder', price: 20500, badge: 'Lightweight', hot: false, image: 'images/cylinder-3kg.png' },
-    { id: 'qty-5kg', name: '5kg Gas Cylinder', price: 25500, badge: 'Popular', hot: true, image: 'images/cylinder-5kg.png' },
-    { id: 'qty-6kg', name: '6kg Gas Cylinder', price: 28000, badge: null, hot: false, image: 'images/cylinder-6kg.png' },
-    { id: 'qty-11kg', name: '11kg Gas Cylinder', price: 40500, badge: 'Commercial', hot: false, image: 'images/cylinder-11kg.png' },
-    { id: 'qty-12kg', name: '12.5kg Gas Cylinder', price: 50000, badge: 'Best Value', hot: true, image: 'images/cylinder-12.5kg.png' }
-  ];
-
+  const [products, setProducts] = useState(DEFAULT_PRODUCTS);
   const [quantities, setQuantities] = useState({});
   const [visibleCards, setVisibleCards] = useState(new Set());
+
+  useEffect(() => {
+    supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: true })
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          const mapped = data.map((p, i) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            image: p.image_url,
+            badge: null,
+            hot: false,
+          }));
+          setProducts(mapped);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const initial = {};
     products.forEach(p => { initial[p.id] = 1; });
     setQuantities(initial);
-  }, []);
+  }, [products]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
