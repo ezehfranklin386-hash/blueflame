@@ -444,7 +444,7 @@ footer { background: var(--secondary); color: #B0C4DE; padding: clamp(40px, 8vw,
 .promo-banner-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.5s ease;
 }
 .promo-banner:hover .promo-banner-image img {
