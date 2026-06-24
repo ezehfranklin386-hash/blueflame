@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './supabase';
 import Login from './pages/Login';
 import AdminLayout from './components/AdminLayout';
 import Dashboard from './pages/Dashboard';
@@ -7,35 +8,32 @@ import Products from './pages/Products';
 import Sales from './pages/Sales';
 import Settings from './pages/Settings';
 
-const SESSION_DURATION = 30 * 60 * 1000;
-
 function AdminApp() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [session, setSession] = useState(null);
+  const [checking, setChecking] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    const loggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-    const loginTime = parseInt(localStorage.getItem('adminLoginTime') || '0', 10);
-    const sessionExpired = (Date.now() - loginTime) > SESSION_DURATION;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setChecking(false);
+    });
 
-    if (loggedIn && !sessionExpired) {
-      setIsLoggedIn(true);
-    } else {
-      localStorage.removeItem('adminLoggedIn');
-      localStorage.removeItem('adminLoginTime');
-    }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
-    setActiveTab('dashboard');
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminLoginTime');
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
   };
 
   const handleTabChange = (tab) => {
@@ -47,7 +45,9 @@ function AdminApp() {
     setRefreshKey(prev => prev + 1);
   };
 
-  if (!isLoggedIn) {
+  if (checking) return null;
+
+  if (!session) {
     return <Login onLogin={handleLogin} />;
   }
 

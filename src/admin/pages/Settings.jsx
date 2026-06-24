@@ -4,7 +4,6 @@ import ConfirmModal from '../components/ConfirmModal';
 import Alert from '../components/Alert';
 
 function Settings() {
-  const [newPassword, setNewPassword] = useState('');
   const [alert, setAlert] = useState(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -12,16 +11,6 @@ function Settings() {
     setAlert({ type, message });
     setTimeout(() => setAlert(null), 4000);
   };
-
-  function updatePassword() {
-    if (!newPassword || newPassword.length < 6) {
-      showAlert('warning', 'Password must be at least 6 characters long');
-      return;
-    }
-    localStorage.setItem('adminPassword', newPassword);
-    showAlert('success', 'Password updated! It will persist on this browser.');
-    setNewPassword('');
-  }
 
   async function clearAllData() {
     try {
@@ -31,7 +20,6 @@ function Settings() {
         .neq('id', 0);
 
       if (error) throw error;
-
       showAlert('success', 'All sales data cleared!');
       setShowClearConfirm(false);
     } catch (error) {
@@ -44,26 +32,6 @@ function Settings() {
     <div className="settings-page">
       <h3>Settings</h3>
       {alert && <Alert type={alert.type} message={alert.message} />}
-
-      <div className="card settings-card">
-        <div className="settings-card-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-        <div className="settings-card-body">
-          <h4>Change Admin Password</h4>
-          <p>Update the password used to access this admin dashboard.</p>
-          <div className="settings-password-form">
-            <input
-              type="password"
-              id="new-password"
-              placeholder="Enter new password (min 6 characters)"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-            />
-            <button className="btn-primary" onClick={updatePassword}>Update</button>
-          </div>
-        </div>
-      </div>
 
       <div className="card settings-card settings-danger">
         <div className="settings-card-icon">

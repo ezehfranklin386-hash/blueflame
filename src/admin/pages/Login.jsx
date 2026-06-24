@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
+import { supabase } from '../supabase';
 
 function Login({ onLogin }) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'blueflame2024';
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const stored = localStorage.getItem('adminPassword');
-    const validPassword = stored || ADMIN_PASSWORD;
+    setError('');
+    setLoading(true);
 
-    if (password === validPassword) {
-      localStorage.setItem('adminLoggedIn', 'true');
-      localStorage.setItem('adminLoginTime', Date.now().toString());
-      setError('');
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       onLogin();
-    } else {
-      setError('Incorrect password. Try again!');
-      setTimeout(() => setError(''), 3000);
+    } catch (err) {
+      setError(err.message === 'Invalid login credentials' ? 'Invalid email or password' : err.message);
+      setTimeout(() => setError(''), 4000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,18 +31,16 @@ function Login({ onLogin }) {
         <p>Blue Flame Gas Supply Dashboard</p>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter admin password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              autoFocus
-              required
-            />
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" placeholder="admin@blueflame.com" value={email} onChange={e => setEmail(e.target.value)} autoFocus required />
           </div>
-          <button type="submit" className="login-btn">Login</button>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)} required />
+          </div>
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Signing in...' : 'Login'}
+          </button>
           {error && <div className="error-msg">{error}</div>}
         </form>
       </div>
