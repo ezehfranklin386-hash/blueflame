@@ -14,7 +14,14 @@ function Products() {
   const [alert, setAlert] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [failedImages, setFailedImages] = useState(new Set());
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editPrice, setEditPrice] = useState('');
+  const [editImageFile, setEditImageFile] = useState(null);
+  const [editImagePreview, setEditImagePreview] = useState(null);
+  const [editImageBase64, setEditImageBase64] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
   const fileInputRef = useRef(null);
+  const editFileInputRef = useRef(null);
 
   const showAlert = (type, message) => {
     setAlert({ type, message });
@@ -61,6 +68,37 @@ function Products() {
     reader.readAsDataURL(file);
   }
 
+  function handleEditFileSelect(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showAlert('warning', 'Please select an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showAlert('warning', 'Image must be under 5MB');
+      return;
+    }
+
+    setEditImageFile(file);
+    setEditImagePreview(URL.createObjectURL(file));
+
+    const reader = new FileReader();
+    reader.onload = () => setEditImageBase64(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  function clearForm() {
+    setName('');
+    setProdPrice('');
+    setImageFile(null);
+    setImagePreview(null);
+    setImageBase64('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
   async function addProduct() {
     if (!name || !prodPrice || !imageBase64) {
       showAlert('warning', 'Please fill in all fields and select an image');
@@ -76,12 +114,7 @@ function Products() {
 
       if (error) throw error;
 
-      setName('');
-      setProdPrice('');
-      setImageFile(null);
-      setImagePreview(null);
-      setImageBase64('');
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      clearForm();
       showAlert('success', 'Product added successfully!');
       await loadProducts();
     } catch (error) {
@@ -91,24 +124,39 @@ function Products() {
     }
   }
 
-  async function editProduct(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
+  function openEdit(product) {
+    setEditingProduct(product.id);
+    setEditPrice(String(product.price));
+    setEditImageFile(null);
+    setEditImagePreview(null);
+    setEditImageBase64('');
+    if (editFileInputRef.current) editFileInputRef.current.value = '';
+  }
 
-    const newPrice = prompt('Enter new price:', product.price);
-    if (newPrice) {
-      try {
-        const { error } = await supabase
-          .from('products')
-          .update({ price: parseInt(newPrice) })
-          .eq('id', id);
+  async function saveEdit() {
+    if (!editingProduct || !editPrice) return;
 
-        if (error) throw error;
-        showAlert('success', 'Product updated!');
-        await loadProducts();
-      } catch (error) {
-        showAlert('danger', 'Error editing product: ' + error.message);
+    try {
+      const updateData = { price: parseInt(editPrice) };
+      if (editImageBase64) {
+        updateData.image_url = editImageBase64;
       }
+
+      const { error } = await supabase
+        .from('products')
+        .update(updateData)
+        .eq('id', editingProduct);
+
+      if (error) throw error;
+      showAlert('success', 'Product updated!');
+      setEditingProduct(null);
+      setEditPrice('');
+      setEditImageFile(null);
+      setEditImagePreview(null);
+      setEditImageBase64('');
+      await loadProducts();
+    } catch (error) {
+      showAlert('danger', 'Error updating product: ' + error.message);
     }
   }
 
@@ -138,67 +186,158 @@ function Products() {
     setFailedImages(prev => new Set([...prev, id]));
   };
 
+  const currentEditProduct = products.find(p => p.id === editingProduct);
+
   return (
-    <div>
+    <div className="products-page">
       <h3>Manage Products</h3>
       {alert && <Alert type={alert.type} message={alert.message} />}
 
-      <div className="card">
-        <h4>Add Product</h4>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="product-name">Product Name</label>
-            <input type="text" id="product-name" placeholder="e.g., 5kg Gas Cylinder" value={name} onChange={e => setName(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="product-price">Price (\u20A6)</label>
-            <input type="number" id="product-price" placeholder="e.g., 25500" min="0" value={prodPrice} onChange={e => setProdPrice(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="product-image">Product Image</label>
-            <input
-              type="file"
-              id="product-image"
-              accept="image/*"
-              onChange={handleFileSelect}
-              ref={fileInputRef}
-            />
-            {imagePreview && (
-              <div style={{ marginTop: '10px', padding: '10px', background: '#f0f8ff', borderRadius: '8px', textAlign: 'center' }}>
-                <img src={imagePreview} alt="Preview" style={{ maxHeight: '120px', maxWidth: '100%', objectFit: 'contain' }} />
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: '5px' }}>{imageFile?.name}</p>
-              </div>
-            )}
-          </div>
+      <div className="card add-product-card">
+        <div className="add-product-header">
+          <h4>Add New Product</h4>
+          <span className="add-product-count">{products.length} product{products.length !== 1 ? 's' : ''}</span>
         </div>
-        <button className="btn-primary" onClick={addProduct} disabled={uploading}>
-          {uploading ? 'Saving...' : 'Add Product'}
-        </button>
+        <div className="add-product-body">
+          <div className="add-product-fields">
+            <div className="form-group">
+              <label htmlFor="product-name">Product Name</label>
+              <input type="text" id="product-name" placeholder="e.g., 5kg Gas Cylinder" value={name} onChange={e => setName(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="product-price">Price (₦)</label>
+              <input type="number" id="product-price" placeholder="e.g., 25500" min="0" value={prodPrice} onChange={e => setProdPrice(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="product-image">Product Image</label>
+              <input type="file" id="product-image" accept="image/*" onChange={handleFileSelect} ref={fileInputRef} />
+            </div>
+          </div>
+          {imagePreview && (
+            <div className="add-product-preview">
+              <img src={imagePreview} alt="Preview" />
+              <span className="add-product-preview-name">{imageFile?.name}</span>
+            </div>
+          )}
+        </div>
+        <div className="add-product-footer">
+          <button className="btn-primary" onClick={addProduct} disabled={uploading}>
+            {uploading ? 'Saving...' : 'Add Product'}
+          </button>
+          {imagePreview && <button className="btn-secondary" onClick={clearForm}>Clear</button>}
+        </div>
       </div>
 
-      <div className="product-grid">
-        {products.length === 0 ? (
-          <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--gray)', padding: '30px' }}>No products added yet</p>
-        ) : (
-          products.map(p => (
-            <div key={p.id} className="product-item">
-              <div className="product-image-box">
-                {failedImages.has(p.id) ? (
-                  <span style={{ color: 'var(--gray)', fontSize: '2rem' }}>?</span>
-                ) : (
-                  <img src={p.image_url} alt={p.name} onError={() => handleImageError(p.id)} />
+      {products.length === 0 ? (
+        <div className="products-empty">
+          <span className="products-empty-icon">📦</span>
+          <p>No products added yet</p>
+          <span className="products-empty-sub">Use the form above to add your first product</span>
+        </div>
+      ) : (
+        <>
+          <div className="products-view-toggle">
+            <button className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>Grid View</button>
+            <button className={`view-toggle-btn ${viewMode === 'table' ? 'active' : ''}`} onClick={() => setViewMode('table')}>Table View</button>
+          </div>
+
+          {viewMode === 'grid' ? (
+            <div className="product-grid">
+              {products.map(p => (
+                <div key={p.id} className="product-item">
+                  <div className="product-image-box">
+                    {failedImages.has(p.id) ? (
+                      <div className="product-image-failed">
+                        <span>📷</span>
+                        <span>Image failed to load</span>
+                      </div>
+                    ) : (
+                      <img src={p.image_url} alt={p.name} onError={() => handleImageError(p.id)} />
+                    )}
+                  </div>
+                  <div className="product-item-body">
+                    <div className="product-name">{p.name}</div>
+                    <div className="product-price">₦{parseInt(p.price).toLocaleString()}</div>
+                  </div>
+                  <div className="product-actions">
+                    <button className="btn-secondary" onClick={() => openEdit(p)}>Edit</button>
+                    <button className="btn-danger" onClick={() => handleDeleteClick(p.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Added</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map(p => (
+                    <tr key={p.id}>
+                      <td className="td-product-img">
+                        {failedImages.has(p.id) ? (
+                          <span className="product-table-img-failed">📷</span>
+                        ) : (
+                          <img src={p.image_url} alt={p.name} onError={() => handleImageError(p.id)} />
+                        )}
+                      </td>
+                      <td className="td-product-name">{p.name}</td>
+                      <td className="td-amount">₦{parseInt(p.price).toLocaleString()}</td>
+                      <td className="td-date">{p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
+                      <td className="td-actions">
+                        <button className="btn-secondary" onClick={() => openEdit(p)}>Edit</button>
+                        <button className="btn-danger" onClick={() => handleDeleteClick(p.id)}>Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+
+      {editingProduct && currentEditProduct && (
+        <div className="modal-overlay" onClick={() => setEditingProduct(null)}>
+          <div className="modal-card edit-product-modal" onClick={e => e.stopPropagation()}>
+            <h3>Edit Product</h3>
+            <p className="modal-product-name">{currentEditProduct.name}</p>
+            <div className="edit-product-current-img">
+              {failedImages.has(currentEditProduct.id) ? (
+                <span>📷</span>
+              ) : (
+                <img src={editImagePreview || currentEditProduct.image_url} alt={currentEditProduct.name} />
+              )}
+            </div>
+            <div className="edit-product-fields">
+              <div className="form-group">
+                <label htmlFor="edit-price">Price (₦)</label>
+                <input type="number" id="edit-price" placeholder="Enter new price" min="0" value={editPrice} onChange={e => setEditPrice(e.target.value)} autoFocus />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-image">Change Image (optional)</label>
+                <input type="file" id="edit-image" accept="image/*" onChange={handleEditFileSelect} ref={editFileInputRef} />
+                {editImagePreview && (
+                  <div className="edit-image-preview-new">
+                    <span>New image selected</span>
+                  </div>
                 )}
               </div>
-              <div className="product-name">{p.name}</div>
-              <div className="product-price">\u20A6{parseInt(p.price).toLocaleString()}</div>
-              <div className="product-actions">
-                <button className="btn-secondary" onClick={() => editProduct(p.id)} style={{ flex: 1 }}>Edit</button>
-                <button className="btn-danger" onClick={() => handleDeleteClick(p.id)} style={{ flex: 1 }}>Delete</button>
-              </div>
             </div>
-          ))
-        )}
-      </div>
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setEditingProduct(null)}>Cancel</button>
+              <button className="btn-primary" onClick={saveEdit}>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {confirmDelete && (
         <ConfirmModal
