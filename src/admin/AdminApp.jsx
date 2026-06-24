@@ -11,10 +11,16 @@ import Settings from './pages/Settings';
 function AdminApp() {
   const [session, setSession] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [configError, setConfigError] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    if (!supabase) {
+      setConfigError(true);
+      setChecking(false);
+      return;
+    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setChecking(false);
@@ -28,13 +34,28 @@ function AdminApp() {
   }, []);
 
   const handleLogin = () => {
+    if (!supabase) return;
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
   };
 
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setSession(null);
   };
+
+  if (checking) return null;
+  if (configError) {
+    return (
+      <div className="login-container">
+        <div className="login-card" style={{ textAlign: 'center' }}>
+          <h1>Configuration Error</h1>
+          <p style={{ color: 'var(--gray)', marginBottom: 16 }}>Supabase credentials not configured.</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--gray)' }}>Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment variables.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);

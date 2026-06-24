@@ -17,6 +17,7 @@ function Products() {
   const [visibleCards, setVisibleCards] = useState(new Set());
 
   useEffect(() => {
+    if (!supabase) return;
     supabase
       .from('products')
       .select('*')

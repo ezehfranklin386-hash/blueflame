@@ -28,6 +28,7 @@ function Contact() {
   const [livePricePerKg, setLivePricePerKg] = useState(null);
 
   useEffect(() => {
+    if (!supabase) return;
     supabase
       .from('gas_prices')
       .select('price_per_kg')
