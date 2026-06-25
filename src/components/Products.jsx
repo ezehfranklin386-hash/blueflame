@@ -74,7 +74,7 @@ Please confirm availability. Thank you!`;
 
   return (
     <section id="products" className="products">
-      <h2 style={{ color: '#0066CC' }} className="section-title">Our Products</h2>
+      <h2 style={{ color: 'var(--primary)' }} className="section-title">Our Products</h2>
       <p className="section-subtitle">Quality-certified cylinders & accessories</p>
 
       <div className="products-grid">

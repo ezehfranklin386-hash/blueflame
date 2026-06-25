@@ -11,7 +11,7 @@ function WhyChooseUs() {
 
   return (
     <section id="why-us" className="why-us">
-      <h2 className="section-title" style={{ color: 'var(--secondary)' }}>Why Choose Blue Flame Gas?</h2>
+      <h2 className="section-title" style={{ color: 'var(--text-dark)' }}>Why Choose Blue Flame Gas?</h2>
       <p className="section-subtitle">We put safety and customer satisfaction first</p>
       <div className="why-grid">
         {reasons.map((reason, idx) => (

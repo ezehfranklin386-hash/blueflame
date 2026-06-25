@@ -72,7 +72,7 @@ function Navigation() {
                 type="button"
                 className="mobile-theme-toggle"
                 onClick={() => setDark(prev => !prev)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left', padding: '15px 20px', color: 'var(--secondary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left', padding: '15px 20px', color: 'var(--text-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 {dark ? <Sun size={18} /> : <Moon size={18} />} {dark ? 'Light Mode' : 'Dark Mode'}
               </button>
