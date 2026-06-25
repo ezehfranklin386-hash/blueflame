@@ -1,75 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabase';
-import Login from './pages/Login';
 import AdminLayout from './components/AdminLayout';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import GasPrice from './pages/GasPrice';
 import Products from './pages/Products';
 import Sales from './pages/Sales';
 import Settings from './pages/Settings';
 
-const FALLBACK_KEY = 'bf_admin_fallback';
+const AUTH_KEY = 'bf_admin_auth';
 
 function AdminApp() {
-  const [session, setSession] = useState(() => {
-    if (localStorage.getItem(FALLBACK_KEY) === 'true') return { user: { email: 'admin@blueflame.com' } };
-    return null;
-  });
+  const [authed, setAuthed] = useState(localStorage.getItem(AUTH_KEY) === 'true');
   const [checking, setChecking] = useState(true);
-  const [configError, setConfigError] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    if (localStorage.getItem(FALLBACK_KEY) === 'true') {
-      setChecking(false);
-      return;
-    }
-    if (!supabase) {
-      setConfigError(true);
-      setChecking(false);
-      return;
-    }
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setChecking(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
+    setChecking(false);
   }, []);
 
-  const handleLogin = (fallback) => {
-    if (fallback) {
-      localStorage.setItem(FALLBACK_KEY, 'true');
-      setSession({ user: { email: 'admin@blueflame.com' } });
-      return;
-    }
-    if (!supabase) return;
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+  const handleLogin = () => {
+    localStorage.setItem(AUTH_KEY, 'true');
+    setAuthed(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem(FALLBACK_KEY);
-    if (!supabase) { setSession(null); return; }
-    supabase.auth.signOut().catch(() => {});
-    setSession(null);
+    localStorage.removeItem(AUTH_KEY);
+    setAuthed(false);
   };
 
   if (checking) return null;
-  if (configError) {
-    return (
-      <div className="login-container">
-        <div className="login-card" style={{ textAlign: 'center' }}>
-          <h1>Configuration Error</h1>
-          <p style={{ color: 'var(--gray)', marginBottom: 16 }}>Supabase credentials not configured.</p>
-          <p style={{ fontSize: '0.85rem', color: 'var(--gray)' }}>Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment variables.</p>
-        </div>
-      </div>
-    );
+
+  if (!authed) {
+    return <Login onLogin={handleLogin} />;
   }
 
   const handleTabChange = (tab) => {
@@ -77,28 +40,14 @@ function AdminApp() {
     setRefreshKey(prev => prev + 1);
   };
 
-  const handleSaleChange = () => {
-    setRefreshKey(prev => prev + 1);
-  };
-
-  if (!session) {
-    return <Login onLogin={handleLogin} />;
-  }
-
   const renderTab = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard key={`dash-${refreshKey}`} />;
-      case 'prices':
-        return <GasPrice onPriceUpdate={() => setRefreshKey(prev => prev + 1)} />;
-      case 'products':
-        return <Products key={`prod-${refreshKey}`} />;
-      case 'sales':
-        return <Sales key={`sales-${refreshKey}`} onSaleChange={handleSaleChange} />;
-      case 'settings':
-        return <Settings key={`sett-${refreshKey}`} />;
-      default:
-        return <Dashboard />;
+      case 'dashboard': return <Dashboard key={`dash-${refreshKey}`} />;
+      case 'prices': return <GasPrice onPriceUpdate={() => setRefreshKey(prev => prev + 1)} />;
+      case 'products': return <Products key={`prod-${refreshKey}`} />;
+      case 'sales': return <Sales key={`sales-${refreshKey}`} onSaleChange={() => setRefreshKey(prev => prev + 1)} />;
+      case 'settings': return <Settings key={`sett-${refreshKey}`} />;
+      default: return <Dashboard />;
     }
   };
 
