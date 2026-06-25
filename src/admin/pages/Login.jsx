@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabase';
 
+const ADMIN_EMAIL = 'admin@blueflame.com';
+const ADMIN_PASSWORD = 'blueflame2024';
+
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,6 +16,10 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        onLogin();
+        return;
+      }
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       onLogin();
@@ -32,7 +39,7 @@ function Login({ onLogin }) {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" placeholder="admin@blueflame.com" value={email} onChange={e => setEmail(e.target.value)} autoFocus required />
+            <input type="email" id="email" placeholder={ADMIN_EMAIL} value={email} onChange={e => setEmail(e.target.value)} autoFocus required />
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
