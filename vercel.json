@@ -1,0 +1,24 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "env": {
+    "VITE_SUPABASE_URL": "https://eoqvfmmrbgbonbpgibsq.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvcXZmbW1yYmdib25icGdpYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzcxNzcsImV4cCI6MjA5NTAxMzE3N30.QuLcy9EF_FZDF0JNoAxEniifxPnPLW41_x4M8C20PCw",
+    "VITE_ADMIN_PASSWORD": "blueflame2024"
+  },
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
