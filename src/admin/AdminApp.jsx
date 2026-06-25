@@ -8,14 +8,23 @@ import Products from './pages/Products';
 import Sales from './pages/Sales';
 import Settings from './pages/Settings';
 
+const FALLBACK_KEY = 'bf_admin_fallback';
+
 function AdminApp() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(() => {
+    if (localStorage.getItem(FALLBACK_KEY) === 'true') return { user: { email: 'admin@blueflame.com' } };
+    return null;
+  });
   const [checking, setChecking] = useState(true);
   const [configError, setConfigError] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    if (localStorage.getItem(FALLBACK_KEY) === 'true') {
+      setChecking(false);
+      return;
+    }
     if (!supabase) {
       setConfigError(true);
       setChecking(false);
@@ -33,14 +42,20 @@ function AdminApp() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (fallback) => {
+    if (fallback) {
+      localStorage.setItem(FALLBACK_KEY, 'true');
+      setSession({ user: { email: 'admin@blueflame.com' } });
+      return;
+    }
     if (!supabase) return;
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
   };
 
-  const handleLogout = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem(FALLBACK_KEY);
+    if (!supabase) { setSession(null); return; }
+    supabase.auth.signOut().catch(() => {});
     setSession(null);
   };
 
@@ -65,8 +80,6 @@ function AdminApp() {
   const handleSaleChange = () => {
     setRefreshKey(prev => prev + 1);
   };
-
-  if (checking) return null;
 
   if (!session) {
     return <Login onLogin={handleLogin} />;

@@ -17,7 +17,7 @@ function Login({ onLogin }) {
 
     try {
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        onLogin();
+        onLogin(true);
         return;
       }
       const { error } = await supabase.auth.signInWithPassword({ email, password });
