@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { CONTACT_CONFIG } from '../config';
 import { supabase } from '../supabase';
 import { validateForm } from '../utils/formValidation';
@@ -8,7 +10,6 @@ import { Phone, MapPin, Clock, Mail } from 'lucide-react';
 
 const initialFormData = { name: '', phone: '', amount: '', address: '' };
 const initialErrors = { name: '', phone: '', amount: '', address: '' };
-const initialStatus = { type: '', message: '' };
 
 function Contact() {
   const {
@@ -23,8 +24,6 @@ function Contact() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState(initialErrors);
-  const [status, setStatus] = useState(initialStatus);
-  const [isVisible, setIsVisible] = useState(false);
   const [livePricePerKg, setLivePricePerKg] = useState(null);
 
   useEffect(() => {
@@ -39,26 +38,9 @@ function Contact() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const contactContainer = document.getElementById('contact-container');
-    if (contactContainer) observer.observe(contactContainer);
-
-    return () => observer.disconnect();
-  }, []);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     setErrors({ ...errors, [e.target.id]: '' });
-    setStatus(initialStatus);
   };
 
   const effectivePricePerKg = livePricePerKg || pricePerKg;
@@ -81,12 +63,11 @@ Please contact this customer to confirm their order.`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus(initialStatus);
 
-    const { isValid, errors: validationErrors } = validateForm(formData);
+    const { isValid, errors: validationErrors } = validateForm(formData, minOrderAmount);
     if (!isValid) {
       setErrors(validationErrors);
-      setStatus({ type: 'error', message: 'Please fix the highlighted fields before submitting.' });
+      toast.error('Please fix the highlighted fields before submitting.');
       return;
     }
 
@@ -95,7 +76,7 @@ Please contact this customer to confirm their order.`;
 
     const opened = window.open(waUrl, '_blank');
     if (opened) {
-      setStatus({ type: 'success', message: 'WhatsApp opened successfully. Your order message is ready to send.' });
+      toast.success('WhatsApp opened successfully. Your order message is ready to send.');
       setFormData(initialFormData);
       setErrors(initialErrors);
       return;
@@ -104,10 +85,7 @@ Please contact this customer to confirm their order.`;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(message);
-        setStatus({
-          type: 'success',
-          message: 'WhatsApp could not open automatically. The order details have been copied to your clipboard.'
-        });
+        toast.success('WhatsApp could not open automatically. The order details have been copied to your clipboard.');
         setFormData(initialFormData);
         setErrors(initialErrors);
         return;
@@ -116,15 +94,18 @@ Please contact this customer to confirm their order.`;
       }
     }
 
-    setStatus({
-      type: 'error',
-      message: 'Unable to open WhatsApp or copy the message. Please try again or contact us directly.'
-    });
+    toast.error('Unable to open WhatsApp or copy the message. Please try again or contact us directly.');
   };
 
   return (
     <section id="contact" className="contact">
-      <div id="contact-container" className={`contact-container ${isVisible ? 'visible' : ''}`}>
+      <motion.div
+        className="contact-container"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="contact-info">
           <h3>Get In Touch</h3>
           <div className="contact-item">
@@ -173,72 +154,17 @@ Please contact this customer to confirm their order.`;
         <div className="contact-form">
           <h3>Request a Delivery</h3>
           <form onSubmit={handleSubmit} noValidate>
-            <div className="form-group">
-              <label htmlFor="name">Full Name</label>
-              <input
-                type="text"
-                id="name"
-                placeholder="Your name"
-                value={formData.name}
-                onChange={handleChange}
-                aria-describedby="name-error"
-                aria-invalid={!!errors.name}
-                required
-              />
-              <span className="field-error" id="name-error" aria-live="assertive">{errors.name}</span>
+            <FormField id="name" label="Full Name" placeholder="Your name" value={formData.name} onChange={handleChange} error={errors.name} required />
+            <FormField id="phone" label="Phone Number" type="tel" placeholder="08012345678" value={formData.phone} onChange={handleChange} error={errors.phone} required />
+            <FormField id="amount" label="Amount (₦)" type="number" placeholder="e.g., 5000" minValue={minOrderAmount} value={formData.amount} onChange={handleChange} error={errors.amount} required />
+            <div className="price-calculator-result">
+              ≈ {getWeightForPrice(formData.amount).toFixed(2)} kg (₦{effectivePricePerKg.toLocaleString()} = 1kg)
             </div>
-            <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                placeholder="08012345678"
-                value={formData.phone}
-                onChange={handleChange}
-                aria-describedby="phone-error"
-                aria-invalid={!!errors.phone}
-                required
-              />
-              <span className="field-error" id="phone-error" aria-live="assertive">{errors.phone}</span>
-            </div>
-            <div className="form-group">
-              <label htmlFor="amount">Amount (₦)</label>
-              <input
-                type="number"
-                id="amount"
-                placeholder="e.g., 5000"
-                min={minOrderAmount}
-                value={formData.amount}
-                onChange={handleChange}
-                aria-describedby="amount-error"
-                aria-invalid={!!errors.amount}
-                required
-              />
-              <span className="field-error" id="amount-error" aria-live="assertive">{errors.amount}</span>
-              <div className="price-calculator-result">
-                ≈ {getWeightForPrice(formData.amount).toFixed(2)} kg (₦{effectivePricePerKg.toLocaleString()} = 1kg)
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="address">Delivery Address</label>
-              <textarea
-                id="address"
-                placeholder="Your full delivery address"
-                value={formData.address}
-                onChange={handleChange}
-                aria-describedby="address-error"
-                aria-invalid={!!errors.address}
-                required
-              ></textarea>
-              <span className="field-error" id="address-error" aria-live="assertive">{errors.address}</span>
-            </div>
-            {status.message && (
-              <div className={`form-status ${status.type}`} role="status" aria-live="polite" aria-atomic="true">{status.message}</div>
-            )}
+            <FormField id="address" label="Delivery Address" type="textarea" placeholder="Your full delivery address" value={formData.address} onChange={handleChange} error={errors.address} required />
             <button type="submit" className="btn btn-primary full-width">Submit Order</button>
           </form>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

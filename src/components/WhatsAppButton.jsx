@@ -1,10 +1,11 @@
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
+import { CONTACT_CONFIG } from '../config';
 
 function WhatsAppButton() {
   return (
     <a 
-      href="https://wa.me/2348106606098?text=Hello%20Blue%20Flame%20Gas!%20I%20need%20help%20with%20an%20order." 
+      href={`https://wa.me/${CONTACT_CONFIG.whatsappNumber}?text=Hello%20Blue%20Flame%20Gas!%20I%20need%20help%20with%20an%20order.`}
       className="whatsapp-float" 
       target="_blank"
       rel="noopener noreferrer"

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Smartphone } from 'lucide-react';
 import { supabase } from '../supabase';
+import { CONTACT_CONFIG } from '../config';
 
 const DEFAULT_PRODUCTS = [
   { id: 'qty-3kg', name: '3kg Gas Cylinder', price: 20500, badge: 'Lightweight', hot: false, image: 'images/cylinder-3kg.png' },
@@ -11,20 +13,19 @@ const DEFAULT_PRODUCTS = [
 ];
 
 function Products() {
-  const WHATSAPP_NUMBER = '2348106606098';
   const [products, setProducts] = useState(DEFAULT_PRODUCTS);
   const [quantities, setQuantities] = useState({});
-  const [visibleCards, setVisibleCards] = useState(new Set());
+  const [loading, setLoading] = useState(!!supabase);
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase) { setLoading(false); return; }
     supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: true })
       .then(({ data, error }) => {
         if (!error && data && data.length > 0) {
-          const mapped = data.map((p, i) => ({
+          const mapped = data.map(p => ({
             id: p.id,
             name: p.name,
             price: p.price,
@@ -35,7 +36,8 @@ function Products() {
           setProducts(mapped);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -43,24 +45,6 @@ function Products() {
     products.forEach(p => { initial[p.id] = 1; });
     setQuantities(initial);
   }, [products]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setVisibleCards(prev => new Set([...prev, entry.target.id]));
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    const cards = document.querySelectorAll('.product-card');
-    cards.forEach(card => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, []);
 
   const updateQuantity = (id, change) => {
     setQuantities(prev => {
@@ -85,7 +69,7 @@ I want to order:
 
 Please confirm availability. Thank you!`;
 
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/${CONTACT_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   return (
@@ -94,8 +78,24 @@ Please confirm availability. Thank you!`;
       <p className="section-subtitle">Quality-certified cylinders & accessories</p>
 
       <div className="products-grid">
-        {products.map((product, idx) => (
-          <div key={idx} id={`product-${idx}`} className={`product-card animate-on-scroll ${visibleCards.has(`product-${idx}`) ? 'visible' : ''}`}>
+        {loading ? Array.from({ length: 5 }).map((_, idx) => (
+          <div key={idx} className="product-card skeleton-card">
+            <div className="product-image skeleton-pulse" />
+            <div className="product-info">
+              <div className="skeleton-line skeleton-line-title" />
+              <div className="skeleton-line skeleton-line-price" />
+              <div className="skeleton-line skeleton-line-btn" />
+            </div>
+          </div>
+        )) : products.map((product, idx) => (
+          <motion.div
+            key={idx}
+            className="product-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, delay: idx * 0.1 }}
+          >
             <div className="product-image">
               {product.badge && (
                 <span className={`product-badge ${product.hot ? 'hot' : ''}`}>{product.badge}</span>
@@ -114,7 +114,7 @@ Please confirm availability. Thank you!`;
                 <Smartphone size={18} style={{verticalAlign: 'middle'}} /> Order on WhatsApp
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

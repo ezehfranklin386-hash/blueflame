@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import Alert from '../components/Alert';
 
+const QUICK_PRICES = [950, 1200, 1500, 1800, 2000, 2500];
+
 function GasPrice({ onPriceUpdate }) {
   const [price, setPrice] = useState('');
   const [currentPrice, setCurrentPrice] = useState(null);
@@ -77,35 +79,58 @@ function GasPrice({ onPriceUpdate }) {
   };
 
   return (
-    <div>
+    <div className="gas-price-page">
       <h3>Manage Gas Price</h3>
       {alert && <Alert type={alert.type} message={alert.message} />}
-      <div className="card" style={{ maxWidth: '400px' }}>
+      <div className="card price-card">
         {loading ? (
-          <p style={{ color: 'var(--gray)' }}>Loading current price...</p>
+          <div className="card-loading">
+            <div className="spinner" />
+            <p>Loading current price...</p>
+          </div>
         ) : (
           <>
-            <div className="form-group">
-              <label htmlFor="admin-price">Gas Price per KG (\u20A6)</label>
-              <input
-                type="number"
-                id="admin-price"
-                placeholder="e.g., 950"
-                min="100"
-                step="10"
-                value={price}
-                onChange={e => setPrice(e.target.value)}
-              />
+            <div className="price-hero">
+              <span className="price-hero-label">Current Price</span>
+              <div className="price-hero-value">
+                \u20A6{currentPrice ? Number(currentPrice).toLocaleString() : '---'}
+              </div>
+              <span className="price-hero-unit">per kilogram (KG)</span>
             </div>
-            {currentPrice && (
-              <p style={{ color: 'var(--gray)', marginBottom: '15px', fontSize: '0.9rem' }}>
-                Current price: \u20A6{Number(currentPrice).toLocaleString()}
-              </p>
-            )}
-            <button className="btn-primary" onClick={handleUpdate}>Update Price</button>
-            <p style={{ color: 'var(--gray)', marginTop: '15px', fontSize: '0.9rem' }}>
-              This price will be used in the delivery calculator on your website.
-            </p>
+            <div className="price-body">
+              <div className="form-group">
+                <label htmlFor="admin-price">New Price (\u20A6/KG)</label>
+                <input
+                  type="number"
+                  id="admin-price"
+                  placeholder="Enter new price..."
+                  min="100"
+                  step="10"
+                  value={price}
+                  onChange={e => setPrice(e.target.value)}
+                />
+              </div>
+              <div className="price-quick-presets">
+                <span className="presets-label">Quick select:</span>
+                <div className="presets-grid">
+                  {QUICK_PRICES.map(p => (
+                    <button
+                      key={p}
+                      className={`preset-btn ${Number(price) === p ? 'selected' : ''}`}
+                      onClick={() => setPrice(String(p))}
+                    >
+                      \u20A6{p.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button className="btn-primary price-update-btn" onClick={handleUpdate}>
+                Update Price
+              </button>
+            </div>
+            <div className="price-footer">
+              <p>This price will be used in the delivery calculator on your website.</p>
+            </div>
           </>
         )}
       </div>

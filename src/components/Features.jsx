@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Zap, Shield, DollarSign, MapPin } from 'lucide-react';
 
 function Features() {
@@ -9,35 +10,22 @@ function Features() {
     { icon: MapPin, title: 'Wide Coverage', desc: 'Serving Ibeju-Lekki, Ajah, Victoria Island & more' }
   ];
 
-  const [visibleCards, setVisibleCards] = useState(new Set());
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setVisibleCards(prev => new Set([...prev, entry.target.id]));
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    const cards = document.querySelectorAll('.feature-card');
-    cards.forEach(card => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="features">
       <div className="features-grid">
         {features.map((feature, idx) => (
-          <div key={idx} id={`feature-${idx}`} className={`feature-card animate-on-scroll ${visibleCards.has(`feature-${idx}`) ? 'visible' : ''}`}>
+          <motion.div
+            key={idx}
+            className="feature-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, delay: idx * 0.1 }}
+          >
             <div className="feature-icon"><feature.icon size={48} /></div>
             <h3>{feature.title}</h3>
             <p>{feature.desc}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

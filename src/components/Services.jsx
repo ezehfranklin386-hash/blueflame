@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Home, Building2, RefreshCw, Wrench, Package, Truck } from 'lucide-react';
 
 function Services() {
@@ -11,36 +12,23 @@ function Services() {
     { icon: Truck, title: 'Scheduled Delivery', desc: 'Set up automatic monthly deliveries so you never run out of gas unexpectedly.' }
   ];
 
-  const [visibleCards, setVisibleCards] = useState(new Set());
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setVisibleCards(prev => new Set([...prev, entry.target.id]));
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    const cards = document.querySelectorAll('.service-card');
-    cards.forEach(card => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section id="services" className="services">
       <h2 className="section-title">Our Services</h2>
       <p className="section-subtitle">Complete gas solutions for your home and business</p>
       <div className="services-grid">
         {services.map((service, idx) => (
-          <div key={idx} id={`service-${idx}`} className={`service-card animate-on-scroll ${visibleCards.has(`service-${idx}`) ? 'visible' : ''}`}>
+          <motion.div
+            key={idx}
+            className="service-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, delay: idx * 0.1 }}
+          >
             <h3><service.icon size={28} /> {service.title}</h3>
             <p>{service.desc}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>

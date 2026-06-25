@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import PromoBanner from './components/PromoBanner';
@@ -10,6 +10,7 @@ import WhyChooseUs from './components/WhyChooseUs';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import BackToTop from './components/BackToTop';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
       <Contact />
       <Footer />
       <WhatsAppButton />
+      <BackToTop />
     </div>
   );
 }

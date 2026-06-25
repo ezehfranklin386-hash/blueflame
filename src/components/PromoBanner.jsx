@@ -1,27 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 function PromoBanner({ image, title, subtitle, ctaText, ctaLink, reverse }) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={ref}
-      className={`promo-banner ${reverse ? 'reverse' : ''} ${visible ? 'visible' : ''}`}
+    <motion.section
+      className={`promo-banner ${reverse ? 'reverse' : ''}`}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.8 }}
     >
       <div className="promo-banner-image">
         <img src={image} alt={title} loading="lazy" />
@@ -35,7 +23,7 @@ function PromoBanner({ image, title, subtitle, ctaText, ctaLink, reverse }) {
           </a>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 }
 
