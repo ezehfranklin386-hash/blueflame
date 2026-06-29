@@ -1,5 +1,5 @@
-import React from 'react';
-import { BarChart3, DollarSign, Package, TrendingUp, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { BarChart3, DollarSign, Package, TrendingUp, Settings, Menu, X } from 'lucide-react';
 
 const TABS = [
   { key: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -11,6 +11,12 @@ const TABS = [
 
 function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
   const now = new Date().toLocaleString();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleTabClick = (key) => {
+    onTabChange(key);
+    setSidebarOpen(false);
+  };
 
   const tabLabels = {
     dashboard: 'Dashboard',
@@ -22,11 +28,22 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
 
   return (
     <div className="admin-wrapper">
-      <aside className="sidebar">
+      <button className="hamburger-btn" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+        <Menu size={24} />
+      </button>
+
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+
+      <aside className={`sidebar ${sidebarOpen ? 'sidebar--open' : ''}`}>
         <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <img src="/logo.png" alt="Logo" />
-            <h3>Blue Flame</h3>
+          <div className="sidebar-header-top">
+            <div className="sidebar-logo">
+              <img src="/logo.png" alt="Logo" />
+              <h3>Blue Flame</h3>
+            </div>
+            <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)} aria-label="Close menu">
+              <X size={22} />
+            </button>
           </div>
           <div className="sidebar-user">
             <div className="sidebar-avatar">A</div>
@@ -41,7 +58,7 @@ function AdminLayout({ activeTab, onTabChange, onLogout, children }) {
             <li key={tab.key}>
               <button
                 className={`tab-link ${activeTab === tab.key ? 'active' : ''}`}
-                onClick={() => onTabChange(tab.key)}
+                onClick={() => handleTabClick(tab.key)}
               >
                 <tab.icon size={18} /> {tab.label}
               </button>
