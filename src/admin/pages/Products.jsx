@@ -16,6 +16,7 @@ function Products() {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [failedImages, setFailedImages] = useState(new Set());
   const [editingProduct, setEditingProduct] = useState(null);
+  const [editName, setEditName] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editImageFile, setEditImageFile] = useState(null);
   const [editImagePreview, setEditImagePreview] = useState(null);
@@ -127,6 +128,7 @@ function Products() {
 
   function openEdit(product) {
     setEditingProduct(product.id);
+    setEditName(product.name);
     setEditPrice(String(product.price));
     setEditImageFile(null);
     setEditImagePreview(null);
@@ -135,11 +137,11 @@ function Products() {
   }
 
   async function saveEdit() {
-    if (!editingProduct || !editPrice) return;
+    if (!editingProduct || !editName || !editPrice) return;
 
     setSaving(true);
     try {
-      const updateData = { price: parseInt(editPrice) };
+      const updateData = { name: editName, price: parseInt(editPrice) };
       if (editImageBase64) {
         updateData.image_url = editImageBase64;
       }
@@ -152,13 +154,15 @@ function Products() {
       if (error) throw error;
       showAlert('success', 'Product updated!');
       setEditingProduct(null);
+      setEditName('');
       setEditPrice('');
       setEditImageFile(null);
       setEditImagePreview(null);
       setEditImageBase64('');
       await loadProducts();
     } catch (error) {
-      showAlert('danger', 'Error updating product: ' + error.message);
+      console.error('Update product error:', error);
+      showAlert('danger', 'Update failed: ' + error.message + '. Check Supabase RLS policies.');
     } finally {
       setSaving(false);
     }
@@ -181,7 +185,8 @@ function Products() {
       setConfirmDelete(null);
       await loadProducts();
     } catch (error) {
-      showAlert('danger', 'Error deleting product: ' + error.message);
+      console.error('Delete product error:', error);
+      showAlert('danger', 'Delete failed: ' + error.message + '. Check Supabase RLS policies.');
       setConfirmDelete(null);
     }
   }
@@ -322,8 +327,12 @@ function Products() {
             </div>
             <div className="edit-product-fields">
               <div className="form-group">
+                <label htmlFor="edit-name">Product Name</label>
+                <input type="text" id="edit-name" placeholder="e.g., 5kg Gas Cylinder" value={editName} onChange={e => setEditName(e.target.value)} autoFocus />
+              </div>
+              <div className="form-group">
                 <label htmlFor="edit-price">Price (₦)</label>
-                <input type="number" id="edit-price" placeholder="Enter new price" min="0" value={editPrice} onChange={e => setEditPrice(e.target.value)} autoFocus />
+                <input type="number" id="edit-price" placeholder="Enter new price" min="0" value={editPrice} onChange={e => setEditPrice(e.target.value)} />
               </div>
               <div className="form-group">
                 <label htmlFor="edit-image">Change Image (optional)</label>
