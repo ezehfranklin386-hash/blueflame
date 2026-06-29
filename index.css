@@ -225,7 +225,7 @@ nav.scrolled { background: rgba(255,255,255,0.98); box-shadow: 0 18px 50px rgba(
 
 /* === HERO === */
 .hero {
-  background-image: url(./gas.png);
+  background-image: url(/gas.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -347,7 +347,7 @@ nav.scrolled { background: rgba(255,255,255,0.98); box-shadow: 0 18px 50px rgba(
 .about-text h2::after { content:''; position:absolute; bottom:-10px; left:0; width:80px; height:4px; background:var(--primary-gradient); border-radius:2px; }
 .about-text p { color: var(--gray); margin-bottom: 20px; line-height: 1.8; }
 .about-image {
-  background-image: url(./supply.png);
+  background-image: url(/supply.png);
   background-size: cover;
   background-position: center;
   border-radius: 20px;
