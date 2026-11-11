@@ -1,27 +1,27 @@
 # Blue Flame Gas Supply LTD
 
-A business website for **Blue Flame Gas Supply Limited**, an LPG gas supply and delivery company serving customers in Lagos, Nigeria.
+A responsive business website for **Blue Flame Gas Supply Limited**, an LPG gas supply and delivery business in Lagos, Nigeria.
 
-The website provides information about the business, showcases its products and services, and gives customers a direct way to make enquiries and place orders.
+The website presents the business, its products and services, and ways for customers to make enquiries and place orders.
 
 ## Features
 
-- Responsive business website for desktop and mobile devices
-- LPG product and service information
+- Responsive layout for desktop and mobile
+- LPG products and service information
 - Product catalogue and pricing presentation
 - WhatsApp ordering and customer enquiry links
 - Contact form
-- Administrative functionality supported by Supabase
-- Interactive UI and motion effects
+- Supabase-backed administrative functionality
+- Interactive interface and motion effects
 
 ## Technology Stack
 
+- **React** — user interface
 - **HTML5** — page structure
-- **React** — component-based user interface
 - **Tailwind CSS** — styling and responsive layouts
 - **Supabase** — backend services and data integration
 - **Vite** — development server and production build
-- **Framer Motion** — interface animations
+- **Framer Motion** — animations
 - **Lucide React** — icons
 
 ## Getting Started
@@ -29,35 +29,35 @@ The website provides information about the business, showcases its products and 
 ### Requirements
 
 - Node.js and npm
-- A Supabase project with the required environment variables
+- A Supabase project and the configuration required by the application
 
 ### Installation
 
-~~~bash
+```bash
 git clone https://github.com/ezehfranklin386-hash/blueflame.git
 cd blueflame
 npm install
-~~~
+```
 
-Create the environment configuration required by the application and add your Supabase project URL and public anon key. Do not commit private keys or secrets to the repository.
+Configure the Supabase project URL and public anon key using the environment configuration expected by the application. Do not commit private keys or secrets.
 
-Start the development server:
+Run the development server:
 
-~~~bash
+```bash
 npm run dev
-~~~
+```
 
 Create a production build:
 
-~~~bash
+```bash
 npm run build
-~~~
+```
 
-For additional Supabase and deployment instructions, see [SUPABASE_SETUP.md](SUPABASE_SETUP.md), [QUICKSTART.md](QUICKSTART.md), and [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+For more detailed setup information, see [SUPABASE_SETUP.md](SUPABASE_SETUP.md), [QUICKSTART.md](QUICKSTART.md), and [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
 
 ## Project Structure
 
-~~~text
+```text
 blueflame/
 ├── public/             # Static assets
 ├── src/
@@ -72,11 +72,15 @@ blueflame/
 ├── package.json
 ├── vite.config.js
 └── README.md
-~~~
+```
 
-## Business
+## Project Status
+
+This is a personal development project and is still under development. It has not been deployed as a live website.
+
+## Business Context
 
 **Blue Flame Gas Supply Limited**  
 Lagos, Nigeria
 
-This repository contains the website implementation. Business contact details and ordering options are presented through the website.
+This repository contains the website implementation. Business contact and ordering options are provided through the website.
